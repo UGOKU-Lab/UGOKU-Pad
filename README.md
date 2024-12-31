@@ -1,16 +1,4 @@
-# ugoku_console
+# UGOKU Pad
+UGOKU Padは、ESP32などのマイコンをBluetoothでスマートフォンと接続し、簡単に操作できるアプリです。ジョイスティックやスライダー、ボタンなど、色々なウィジェットを組み合わせて、自分だけの操作パネルを作成できます。モーターの操作やセンサーデータをモニタリングなど、様々な用途で活用いただけます。
+ESP32用のArduinoサンプルコードも用意しているので、気軽にお試しいただけます。
 
-UGOKU Lab
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
