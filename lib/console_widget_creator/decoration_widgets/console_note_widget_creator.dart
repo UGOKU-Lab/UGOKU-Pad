@@ -34,7 +34,7 @@ final consoleNoteWidgetCreator = ConsoleWidgetCreator(
         if (match.start > lastMatchEnd) {
           spans.add(TextSpan(
             text: body.substring(lastMatchEnd, match.start),
-            style: Theme.of(context).textTheme.bodyLarge,
+            style: Theme.of(context).textTheme.bodyMedium,
           ));
         }
 
@@ -67,7 +67,7 @@ final consoleNoteWidgetCreator = ConsoleWidgetCreator(
       if (lastMatchEnd < body.length) {
         spans.add(TextSpan(
           text: body.substring(lastMatchEnd),
-          style: Theme.of(context).textTheme.bodyLarge,
+          style: Theme.of(context).textTheme.bodyMedium,
         ));
       }
 
@@ -83,13 +83,13 @@ final consoleNoteWidgetCreator = ConsoleWidgetCreator(
             children: [
               Text(
                 property["title"]?.toString() ?? "",
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: Theme.of(context).textTheme.headlineSmall,
                 overflow: TextOverflow.fade,
               ),
               RichText(
                 text: TextSpan(
                   children: parseBody(bodyText),
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
             ],

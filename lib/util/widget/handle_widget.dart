@@ -55,10 +55,14 @@ class _HandleWidgetState extends State<HandleWidget> {
         widget.onValueFix?.call();
         widget.onActivationChange?.call(false);
 
-        // Explicitly reset the origin coordinates
-        //_originX = 0;
-        //_originY = 0;
+        _originX = _originY = 0;  // reset
       },
+      onPanCancel: () {
+        widget.onValueFix?.call();
+        widget.onActivationChange?.call(false);
+
+        _originX = _originY = 0;  // reset
+      }
       //onLongPress: () => widget.onActivationChange?.call(false),
     );
   }

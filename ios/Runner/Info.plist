@@ -27,9 +27,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>This app needs Bluetooth to function</string>
+	<string>This app requires Bluetooth (BLE) to connect with external devices like ESP32 microcontrollers, enabling functionality such as motor control, sensor data visualization, and real-time device monitoring.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>This app uses Bluetooth to connect to external devices and improve user experience.</string>
+	<string>This app uses Bluetooth (BLE) to connect with devices like ESP32 microcontrollers, allowing users to control motors, display sensor data, and access additional device features, ensuring an interactive and efficient user experience.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

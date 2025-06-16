@@ -30,8 +30,8 @@ class _ConsoleJoystickWidgetState extends State<ConsoleJoystickWidget> {
   late double _rateX;
   late double _rateY;
 
-  double? _prevValueX;
-  double? _prevValueY;
+  //double? _prevValueX;
+  //double? _prevValueY;
   StreamSubscription? _subscriptionX;
   StreamSubscription? _subscriptionY;
 
@@ -53,7 +53,7 @@ class _ConsoleJoystickWidgetState extends State<ConsoleJoystickWidget> {
     //print("_setRate: valueX: " + valueX.toString() + " valueY: " + valueY.toString());
 
     if (broadcast) {
-      if (widget.property.channelX != null && _prevValueX != valueX) {
+      if (widget.property.channelX != null /* && _prevValueX != valueX*/) {
         widget.broadcaster?.sinkOn(widget.property.channelX!)?.add(valueX);
 
         //print("broadcast: valueX: " + valueX.toString());
@@ -61,7 +61,7 @@ class _ConsoleJoystickWidgetState extends State<ConsoleJoystickWidget> {
         //print("broadcast2: valueX: " + valueX.toString());
       }
 
-      if (widget.property.channelY != null && _prevValueY != valueY) {
+      if (widget.property.channelY != null /* && _prevValueY != valueY*/) {
         widget.broadcaster?.sinkOn(widget.property.channelY!)?.add(valueY);
 
         //print("broadcast: valueY: " + valueY.toString());
@@ -70,8 +70,8 @@ class _ConsoleJoystickWidgetState extends State<ConsoleJoystickWidget> {
       }
     }
 
-    _prevValueX = valueX;
-    _prevValueY = valueY;
+    //_prevValueX = valueX;
+    //_prevValueY = valueY;
   }
 
   void _initState() {
@@ -210,24 +210,36 @@ class _ConsoleJoystickWidgetState extends State<ConsoleJoystickWidget> {
                 ),
               ),
               // Gesture handle.
-              HandleWidget(
-                onValueChange: (dx, dy) => _setRate(
-                  dx / constraints.maxWidth + 0.5,
-                  -dy / constraints.maxHeight + 0.5,
-                ),
-                onValueFix: () {
-                  //print("handle_widget: onValueFix1");
+              GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onPanEnd: (_) {
+                  // Whenever the finger lifts anywhere in this area,
+                  // send neutral “stop” to servos:
                   _setRate(0.5, 0.5);
-
-                  Timer(const Duration(milliseconds: 100), () {
-                    //print("handle_widget: onValueFix2");
-                    _prevValueX = -1;
-                    _prevValueY = -1;
-
-                    _setRate(0.5, 0.5);
-                  });
                 },
-                onActivationChange: (act) => setState(() => _activate = act),
+                onPanCancel: () {
+                  // Also handle cancellation (in case the system interrupts the drag)
+                  _setRate(0.5, 0.5);
+                },
+                child: HandleWidget(
+                  onValueChange: (dx, dy) => _setRate(
+                    dx / constraints.maxWidth + 0.5,
+                    -dy / constraints.maxHeight + 0.5,
+                  ),
+                  onValueFix: () {
+                    //print("handle_widget: onValueFix1");
+                    _setRate(0.5, 0.5);
+
+                    Timer(const Duration(milliseconds: 50), () { //100
+                      //print("handle_widget: onValueFix2");
+                      //_prevValueX = -1;
+                      //_prevValueY = -1;
+
+                      _setRate(0.5, 0.5);
+                    });
+                  },
+                  onActivationChange: (act) => setState(() => _activate = act),
+                ),
               ),
             ]),
       ),

@@ -14,7 +14,9 @@ class StartupWidget extends StatelessWidget {
     /// The process to be done in the startup.
     late final _startup = SharedPreferences.getInstance().then((instance) async {
     final packageInfo = await PackageInfo.fromPlatform();
-    final version = packageInfo.version;
+    final versionName   = packageInfo.version;
+    final buildNumber   = packageInfo.buildNumber;
+    final version    = '$versionName+$buildNumber';
 
     print("Version: $version");
 
@@ -31,7 +33,7 @@ class StartupWidget extends StatelessWidget {
 
       final newlyCreatedWidgets = [
         ConsoleSaveObject(
-          'Release Notes: $version',
+          'Release Notes: $versionName',
           ConsolePanelParameter(
             rows: 1,
             columns: 1,
@@ -41,27 +43,34 @@ class StartupWidget extends StatelessWidget {
                 column: 0,
                 creator: 'Note',
                 property: {
-                  'title': 'Release Notes: $version',
+                  'title': 'Release Notes: $versionName',
                   'body':
-                  'Welcome to the $version of the UGOKU Pad.\n'
-                  'With this app, you can connect to a microcontroller such as ESP32 via Bluetooth and do various things such as operating the motor and displaying sensor values with a console created by yourself.\n'
-                      '\n'
-                      'This offers the following key features:\n'
-                      '- Console creation\n'
-                      '- Connection to your Bluetooth devices\n'
-                      '- Control of the devices using BLE\n'
-                      '\n'
-                      '[url=https://ugoku-lab.github.io/ugokupad.html]How to use[/url]',
+                    'Welcome to the $versionName of the UGOKU Pad.\n'
+                    'With this app, you can connect to a microcontroller such as ESP32 via Bluetooth and do various things such as operating the motor and displaying sensor values with a console created by yourself.\n'
+                    '\n'
+                    '[url=https://ugoku-lab.github.io/ugokupad.html]How to use[/url]\n'
+                    '\n'
+                    'This offers the following key features:\n'
+                    '- Console creation\n'
+                    '- Connection to your Bluetooth devices\n'
+                    '- Control of the devices using BLE\n'
+                    '\n'
+                    'Update:\n'
+                    '- Improved latency when using 2 or more channels simultaneously by switching to a data transfer method optimized for BLE.\n',
                   'body_ja':
-                  'UGOKU Pad $versionへようこそ。\n'
-                  'このアプリではESP32などのマイコンにBluetooth接続し、自分で作成したコンソールでモータの操作やセンサ値の表示など様々なことを行うことができます。\n'
-                      '\n'
-                  '主な機能：\n'
-                  '- コンソールの作成\n'
-                  '- Bluetoothデバイスへの接続\n'
-                  '- BLEを使用したデバイスのコントロール\n'
-                      '\n'
-                  '使い方は[url=https://ugoku-lab.github.io/ugokupad.html]こちら[/url]'
+                    'UGOKU Pad $versionNameへようこそ。\n'
+                    'このアプリではESP32などのマイコンにBluetooth接続し、自分で作成したコンソールでモータの操作やセンサ値の表示など様々なことを行うことができます。\n'
+                    '\n'
+                    '使い方は[url=https://ugoku-lab.github.io/ugokupad.html]こちら[/url]\n'
+                    '\n'
+                    '主な機能：\n'
+                    '- コンソールの作成\n'
+                    '- Bluetoothデバイスへの接続\n'
+                    '- BLEを使用したデバイスのコントロール\n'
+                    '\n'
+                    '更新内容：\n'
+                    '- BLEに適したデータ転送方式に変更し、2ch以上同時使用時の遅延を改善'
+
                 },
               ),
             ],
@@ -158,7 +167,7 @@ class StartupWidget extends StatelessWidget {
     return recentlyUsed != null
         ? ConsolePanelParameter.fromJson(jsonDecode(recentlyUsed))
         : savedConsoles
-        .where((c) => c.title == 'Release Notes: $version')
+        .where((c) => c.title == 'Release Notes: $versionName')
         .first
         .parameter;
   });

@@ -52,7 +52,6 @@ class BleStateBroadcaster implements MultiChannelBroadcaster {
 
   late StreamSubscription<List<int>> _notificationSubscription;
   late Timer _periodicSendTimer;
-  late Timer _periodicReadTimer;
 
   /// Creates a broadcaster using [characteristic].
   BleStateBroadcaster(
@@ -66,113 +65,113 @@ class BleStateBroadcaster implements MultiChannelBroadcaster {
 
     // Set the timer for periodic send
     _periodicSendTimer = Timer.periodic(
-      const Duration(milliseconds: 100),
+      const Duration(milliseconds: 50),
           (_) => _periodicSend(),
     );
-
-    if (Platform.isIOS) {
-      // Set the timer for periodic read
-      _periodicReadTimer = Timer.periodic(
-          const Duration(milliseconds: 100), (timer) async {
-        if (characteristic != null) {
-          try {
-            var value = await characteristic!.read();
-            _distribute(
-                value); // Process the value as you would in a notification
-          } catch (error) {
-            print('Error reading characteristic: $error');
-          }
-        } else {
-          //print("Characteristic is not available.");
-        }
-      });
-    }
   }
 
   Future<void> _setNotifications() async {
-    if (Platform.isIOS) {
-      // Check if notifications are supported
-      if (characteristic!.properties.notify) {
-        await characteristic?.setNotifyValue(true);
+    await characteristic?.setNotifyValue(true);
+    print('setNotifyValue(true) succeeded');
 
-        // Listen to notifications
-        _notificationSubscription =
-            characteristic!.onValueReceived.listen(
-                _distribute, onError: (error) {
-              // Handle error
-              print('Notification error: $error');
-            });
-      } else {
-        // Handle the case where notifications are not supported
-        print('Notifications not supported on this characteristic');
-      }
-    } else { // Android
-      // Check if notifications are supported
-      if (true) {//(characteristic!.properties.notify) {
-        await characteristic?.setNotifyValue(true);
-
-        // Listen to notifications
-        _notificationSubscription =
-            characteristic!.onValueReceived.listen(
-                _distribute, onError: (error) {
-              // Handle error
-              print('Notification error: $error');
-            });
-      } else {
-        // Handle the case where notifications are not supported
-        print('Notifications not supported on this characteristic');
-      }
-    }
+    // Listen to notifications
+    _notificationSubscription =
+        characteristic!.onValueReceived.listen(
+            _distribute, onError: (error) {
+          // Handle error
+          print('Notification error: $error');
+        });
   }
 
+  /// Handle a full notification/read from the BLE characteristic.
+  /// On both platforms, we expect exactly 19 bytes: 9×(channel, value) + 1×(checksum).
   void _distribute(List<int> data) {
+
+    //print('*** Raw notification bytes: $data');
+
     _receiveBuffer.addAll(data);
 
-    while (_receiveBuffer.length >= 3) {
-      final bleData = _ValueOnChannel.fromIntList(_receiveBuffer);
+    // Process in 19-byte chunks
+    while (_receiveBuffer.length >= 19) {
+      // Take the first 19 bytes
+      final chunk = _receiveBuffer.sublist(0, 19);
+      _receiveBuffer.removeRange(0, 19);
 
-      if (bleData != null) {
-        // Push the data to the downward branches.
-        _root.sink.add(bleData);
-        _receiveBuffer.removeRange(0, 3);
-      } else {
-        // Discard first byte and go next.
-        _receiveBuffer.removeAt(0);
+      // Verify XOR checksum: XOR of bytes[0..17] must equal bytes[18]
+      int computedXor = 0;
+      for (int i = 0; i < 18; i++) {
+        computedXor ^= chunk[i];
+      }
+      if (computedXor != chunk[18]) {
+        // Bad checksum: drop this packet entirely
+        print('Bad checksum on incoming 19-byte packet.');
+        continue;
+      }
+
+      // Parse each of the 9 (channel, value) pairs
+      for (int i = 0; i < 9; i++) {
+        final int ch = chunk[2 * i];     // byte indices: 0,2,4,...,16
+        final int val = chunk[2 * i + 1]; // byte indices: 1,3,5,...,17
+
+        // Emit only if this channel is in our “channels” list
+        _root.sink.add(_ValueOnChannel(ch, val));
       }
     }
   }
 
+  /// Called every 50 ms. Gathers up to 9 pending channel/value pairs, builds one
+  /// 19-byte packet (9×(channel, value) + 1 checksum), and writes it.
   Future<void> _periodicSend() async {
+    if (_sendDataMap.isEmpty || characteristic == null) return;
+
     try {
-      // Make a copy of the entries to avoid concurrent modification during iteration
-      final entriesCopy = Map.of(_sendDataMap);
+      final entries = _sendDataMap.entries.toList();
+      int offset = 0;
 
-      // Iterate over the copy and send data
-      for (final entry in entriesCopy.entries) {
-        final channelId = entry.key.channelId;
-        final value = entry.value;
+      // We may need multiple 19-byte packets if more than 9 entries queued
+      while (offset < entries.length) {
+        final List<int> packetData = [];
 
-        // Prepare data to send
-        final dataToSend = _ValueOnChannel(channelId, value).toUint8List();
+        // Take up to 9 pairs from offset
+        final chunk = entries.skip(offset).take(9).toList();
+        for (final kv in chunk) {
+          packetData.add(kv.key.channelId); // 1 byte for channel
+          packetData.add(kv.value);         // 1 byte for value
+        }
 
-        // Send the data to the device
-        await characteristic?.write(dataToSend);
+        // If < 9 pairs, pad the remainder with zeros so packetData length = 18
+        while (packetData.length < 18) {
+          packetData.add(0);
+        }
+
+        // Compute XOR over the first 18 bytes
+        int xor = 0;
+        for (final b in packetData) {
+          xor ^= b;
+        }
+        // Append checksum as the 19th byte
+        packetData.add(xor);
+
+        // Send the full 19-byte packet
+        final bool supportsWWR = characteristic!.properties.writeWithoutResponse;
+        if (supportsWWR) {
+          await characteristic!.write(Uint8List.fromList(packetData), withoutResponse: true);
+        } else {
+          await characteristic!.write(Uint8List.fromList(packetData));
+        }
+
+        offset += 9; // Move to next block of 9 entries (if any)
       }
 
-      // Clear the original map after sending all the data
+      // Clear everything once we’ve sent
       _sendDataMap.clear();
     } catch (e) {
-      // Handle any errors during the process
       print('Error in _periodicSend: $e');
     }
   }
 
   void dispose() {
     _periodicSendTimer.cancel();
-
-    if (Platform.isIOS) {
-      _periodicReadTimer.cancel();
-    }
 
     _notificationSubscription.cancel();
   }
@@ -263,11 +262,13 @@ StreamController<U> downward,
 
 /// The [value] on the [channel].
 ///
-/// This will be sent/received in 3 bytes:
+/// Now sent/received in a 19‐byte block:
 ///
-/// - The first byte is the [channel] (0-255);
-/// - The second byte is the [value];
-/// - The third byte is the XOR checksum of the [channel] and [value].
+/// - Bytes 0–1   =  (channel0, value0)
+/// - Bytes 2–3   =  (channel1, value1)
+/// - …
+/// - Bytes 16–17 =  (channel8, value8)
+/// - Byte 18     =  XOR checksum of bytes 0..17
 class _ValueOnChannel {
   final int channel; // Channel ID as an integer
   final int value;
