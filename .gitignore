@@ -41,3 +41,21 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# --- Added (Signing / Secrets / Local Config) ---
+# Do NOT commit signing credentials or local SDK paths
+android/key.properties
+**/key.properties
+**/*.jks
+**/*.keystore
+android/local.properties
+
+# Gradle local cache (optional to ignore if not already)
+.gradle/
+
+# Common env / secret files (in case introduced later)
+.env
+.env.*
+secrets/*.json
+secret/*.json
+

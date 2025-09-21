@@ -1,0 +1,10 @@
+# key.properties (example)
+# Copy this file to android/key.properties and fill in real values.
+# DO NOT COMMIT the real key.properties or .jks file.
+# Recommended path for the keystore (relative to android/ directory):
+#   keystore/release_key.jks
+# Lines below are placeholders.
+storeFile=keystore/release_key.jks
+storePassword=CHANGE_ME
+keyAlias=ugokupad
+keyPassword=CHANGE_ME
