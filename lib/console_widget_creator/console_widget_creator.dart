@@ -119,7 +119,7 @@ class ConsoleWidgetCreator {
   /// property.
   SampleConsoleWidgetBuilder get sampleBuilder => (context) {
     // Sample builder is the first priority.
-    if (_sampleBuilder != null) return _sampleBuilder!(context);
+    if (_sampleBuilder != null) return _sampleBuilder(context);
 
     return builder(context, sampleProperty ?? {});
   };

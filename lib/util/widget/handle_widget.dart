@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 
@@ -13,11 +12,11 @@ import 'package:flutter/material.dart';
 /// The long tap is assigned to the cancellation behavior.
 class HandleWidget extends StatefulWidget {
   const HandleWidget({
-    Key? key,
+    super.key,
     required this.onValueChange,
     required this.onValueFix,
     this.onActivationChange,
-  }) : super(key: key);
+  });
 
   final void Function(double, double)? onValueChange;
   final void Function()? onValueFix;

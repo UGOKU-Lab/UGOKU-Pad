@@ -45,9 +45,9 @@ final consoleNoteWidgetCreator = ConsoleWidgetCreator(
           TextSpan(
             text: displayText,
             style: const TextStyle(
-              color: const Color(0xFF673AB7),
+              color: Color(0xFF673AB7),
               decoration: TextDecoration.underline,
-              decorationColor: const Color(0xFF673AB7),
+              decorationColor: Color(0xFF673AB7),
             ),
             recognizer: TapGestureRecognizer()
               ..onTap = () async {

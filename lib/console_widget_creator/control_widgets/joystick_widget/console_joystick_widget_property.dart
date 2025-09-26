@@ -217,7 +217,7 @@ class ConsoleJoystickWidgetProperty extends TypedConsoleWidgetProperty {
       }
     });
 
-    Future.delayed(Duration(milliseconds: 100), () {
+    Future.delayed(const Duration(milliseconds: 100), () {
 
       if (newColor == defaultColorHex) {
         newColor = lastColor;

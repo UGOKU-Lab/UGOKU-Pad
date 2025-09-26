@@ -10,7 +10,7 @@ import 'package:ugoku_console/bluetooth/target_device_provider.dart';
 
 /// The page to connect a bluetooth device.
 class DeviceConnectionPage extends StatefulWidget {
-  const DeviceConnectionPage({Key? key}) : super(key: key);
+  const DeviceConnectionPage({super.key});
 
   @override
   State<DeviceConnectionPage> createState() => _DeviceConnectionPageState();

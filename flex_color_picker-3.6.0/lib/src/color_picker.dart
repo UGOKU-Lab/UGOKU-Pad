@@ -1832,10 +1832,10 @@ class _ColorPickerState extends State<ColorPicker> {
     super.dispose();
   }
 
-  TextEditingController _rController = TextEditingController();
-  TextEditingController _gController = TextEditingController();
-  TextEditingController _bController = TextEditingController();
-  TextEditingController _hexController = TextEditingController();
+  final TextEditingController _rController = TextEditingController();
+  final TextEditingController _gController = TextEditingController();
+  final TextEditingController _bController = TextEditingController();
+  final TextEditingController _hexController = TextEditingController();
 
   // This method updates the text fields whenever the color changes
   void _updateTextFields(Color color) {
@@ -1843,18 +1843,18 @@ class _ColorPickerState extends State<ColorPicker> {
       _rController.text = _selectedColor.red.toString();
       _gController.text = _selectedColor.green.toString();
       _bController.text = _selectedColor.blue.toString();
-      _hexController.text = '${_selectedColor.value.toRadixString(16).substring(2).toUpperCase()}';
+      _hexController.text = _selectedColor.value.toRadixString(16).substring(2).toUpperCase();
     });
   }
 
   // Helper method to update color from R, G, B
   void _updateColorFromRGB() {
-    int r = int.tryParse(_rController.text) ?? 0;
-    int g = int.tryParse(_gController.text) ?? 0;
-    int b = int.tryParse(_bController.text) ?? 0;
+    final int r = int.tryParse(_rController.text) ?? 0;
+    final int g = int.tryParse(_gController.text) ?? 0;
+    final int b = int.tryParse(_bController.text) ?? 0;
     setState(() {
       _selectedColor = Color.fromARGB(255, r, g, b);
-      _hexController.text = '${_selectedColor.value.toRadixString(16).substring(2).toUpperCase()}';
+      _hexController.text = _selectedColor.value.toRadixString(16).substring(2).toUpperCase();
 
       _wheelShouldUpdate = true;
       _updateActiveSwatch();
@@ -1864,7 +1864,7 @@ class _ColorPickerState extends State<ColorPicker> {
 
   // Helper method to update color from Hex
   void _updateColorFromHex() {
-    String hex = _hexController.text;
+    final String hex = _hexController.text;
     if (hex.length == 6) {
       setState(() {
         _selectedColor = Color(int.parse('0xFF$hex'));
@@ -1884,7 +1884,7 @@ class _ColorPickerState extends State<ColorPicker> {
       VoidCallback onChanged) {
     return Row(
       //crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: <Widget>[
         Text(
             label,
             style: TextStyle(
@@ -1900,8 +1900,8 @@ class _ColorPickerState extends State<ColorPicker> {
           child: TextField(
             controller: controller,
             keyboardType: textInputType,
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'[0-9a-fA-F]')), // Allow only hex characters
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.allow(RegExp('[0-9a-fA-F]')), // Allow only hex characters
             ],
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -1924,7 +1924,7 @@ class _ColorPickerState extends State<ColorPicker> {
                 ),
               ),
             ),
-            onChanged: (value) => onChanged(),
+            onChanged: (String value) => onChanged(),
             //onEditingComplete: () => onChanged(),
           ),
         ),
@@ -2136,9 +2136,9 @@ class _ColorPickerState extends State<ColorPicker> {
             // This is the wheel case, draw the custom ColorWheelPicker.
             if (_activePicker == ColorPickerType.wheel)
               Row(
-                children: [
+                children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.only(top: 8),
+                    padding: const EdgeInsets.only(top: 8),
                     child: SizedBox(
                       height: widget.wheelDiameter,
                       width: widget.wheelDiameter,
@@ -2191,8 +2191,8 @@ class _ColorPickerState extends State<ColorPicker> {
                   SizedBox(width: Platform.isAndroid ? 10 : 20),
                   Container(
                     padding: Platform.isAndroid
-                        ? EdgeInsets.fromLTRB(16, 16, 16, 16)
-                        : EdgeInsets.fromLTRB(8, 8, 8, 8),
+                        ? const EdgeInsets.fromLTRB(16, 16, 16, 16)
+                        : const EdgeInsets.fromLTRB(8, 8, 8, 8),
                     decoration: BoxDecoration(
                       color: Theme.of(context).brightness == Brightness.dark ? Colors.grey[800] : Colors.grey[200],
                       borderRadius: BorderRadius.circular(16),
@@ -2200,13 +2200,13 @@ class _ColorPickerState extends State<ColorPicker> {
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
+                      children: <Widget>[
                         _buildTextField('R', _rController, TextInputType.number, _updateColorFromRGB),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         _buildTextField('G', _gController, TextInputType.number, _updateColorFromRGB),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         _buildTextField('B', _bController, TextInputType.number, _updateColorFromRGB),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         _buildTextField('Hex', _hexController, TextInputType.text, _updateColorFromHex),
                       ],
                     ),

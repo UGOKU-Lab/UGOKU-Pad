@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localization/flutter_localization.dart';
-import 'package:markdown_widget/markdown_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ugoku_console/StartupWidget.dart';
 import 'package:ugoku_console/util/AppLocale.dart';
 
 class PrivacyPage extends StatefulWidget {

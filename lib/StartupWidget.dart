@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ugoku_console/privacy_page.dart';
 
 import 'console_page.dart';
 import 'console_list_page.dart';

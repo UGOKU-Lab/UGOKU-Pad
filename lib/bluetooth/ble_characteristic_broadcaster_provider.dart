@@ -1,9 +1,7 @@
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ugoku_console/bluetooth/service_provider.dart';
 import 'package:ugoku_console/bluetooth/target_device_provider.dart';
 
-import '../broadcaster_provider.dart';
 import 'ble_characteristic_broadcaster.dart';
 
 BleStateBroadcaster? _broadcaster;

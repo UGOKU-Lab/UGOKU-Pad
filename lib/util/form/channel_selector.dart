@@ -36,7 +36,7 @@ class ChannelSelector extends ConsumerWidget {
         decoration: InputDecoration(labelText: labelText),
         itemHeight: null,
         isExpanded: true,
-        value: channel,
+        initialValue: channel,
         validator: validator,
         selectedItemBuilder: (context) => [
           Container(

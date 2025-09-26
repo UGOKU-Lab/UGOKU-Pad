@@ -1,13 +1,10 @@
 import 'dart:async';
 import 'dart:collection';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 import '../util/broadcaster/multi_channel_broadcaster.dart';
-import 'ble_characteristic_representation_format.dart';
-import 'constants.dart';
 
 class BleStateChannel implements BroadcastChannel {
   int channelId;

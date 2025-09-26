@@ -2,9 +2,6 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ugoku_console/privacy_page.dart';
 import 'package:ugoku_console/util/AppLocale.dart';
 
 import 'StartupWidget.dart';
