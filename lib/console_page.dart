@@ -229,7 +229,8 @@ class _ConsolePageState extends State<ConsolePage> {
                       child: LicensePage(
                         applicationName: packageInfo.appName,
                         applicationVersion: packageInfo.version,
-                        applicationLegalese: 'Copyright (c) 2024 UGOKU',
+                        applicationLegalese:
+                            'Copyright (c) 2025 UGOKU Lab\nLicensed under the GNU General Public License v3.0',
                       ),
                     ),
                   )),

@@ -86,6 +86,7 @@ flutter:
 
   assets:
     - assets/privacy/
+    - LICENSE
 
 # Config for app icons.
 flutter_icons:

@@ -1,5 +1,7 @@
 import 'dart:ui' as ui;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ugoku_console/util/AppLocale.dart';
@@ -7,7 +9,26 @@ import 'package:ugoku_console/util/AppLocale.dart';
 import 'StartupWidget.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  _registerLicenses();
   runApp(const ProviderScope(child: MyApp()));
+}
+
+bool _licensesRegistered = false;
+
+void _registerLicenses() {
+  if (_licensesRegistered) {
+    return;
+  }
+  _licensesRegistered = true;
+
+  LicenseRegistry.addLicense(() async* {
+    final licenseText = await rootBundle.loadString('LICENSE');
+    yield LicenseEntryWithLineBreaks(
+      const <String>['UGOKU Pad'],
+      licenseText,
+    );
+  });
 }
 
 class MyApp extends StatefulWidget {
