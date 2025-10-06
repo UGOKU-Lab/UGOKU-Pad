@@ -12,6 +12,8 @@
 操作パネル（Console）上に、トグルスイッチやジョイスティックなどの入力ウィジェット、Value Monitor や Line Chart などのモニターウィジェットを任意の位置やサイズで配置できます。
 各ウィジェットには任意のチャンネル番号を設定できます。
 
+<img src="https://github.com/user-attachments/assets/83dc999a-abfa-456a-82dc-63a0d83efa90" width="1000">
+
 ## BLE通信について
 **Flutter**の**flutter_blue_plus**ライブラリを用いて、Android/IOSの標準BLEに対応しています。  
 チャンネル・バリュー・チェックサムの3バイトのデータを単位として送受信します。  
@@ -35,4 +37,5 @@
 
 ## ライセンス
 このプロジェクトは **GPLv3** のもとでライセンスされています。  
+
 
