@@ -8,15 +8,15 @@ plugins {
 android {
     namespace = "com.ugoku_lab.ugoku_console"
 
-    // Explicitly pin compile / target SDK to satisfy Play target API level requirement.
-    // NOTE: As of 2025/09, API 34 is stable; switch to 35 (Android 15) once Flutter stable supports it fully.
-    compileSdk = 34
+    // Explicitly pin compile / target SDK to satisfy the latest Play target API level requirement.
+    // NOTE: Flutter stable (3.27+) supports API 35, so align with Android 15.
+    compileSdk = 35
     ndkVersion = "27.0.12077973"
 
     defaultConfig {
         applicationId = "com.ugoku_lab.ugoku_console"
         minSdk = flutter.minSdkVersion // defined by Flutter (currently from generated values)
-        targetSdk = 34 // update to 35 (Android 15) after validation
+        targetSdk = 35 // Android 15 requirement for 2025 Play uploads
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
