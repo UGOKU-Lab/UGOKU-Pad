@@ -113,6 +113,7 @@ mixin AppLocale {
   static const String validator_sampling_period_min = 'validator_sampling_period_min';
   static const String validator_samples_range = 'validator_samples_range';
   static const String validator_min_max_difference = 'validator_min_max_difference';
+  static const String edit_mode = 'edit_mode';
 
   static const Map<String, dynamic> EN = {
     privacy: 'Terms of App & Privacy Policy',
@@ -234,6 +235,7 @@ mixin AppLocale {
     validator_sampling_period_min: 'Sampling period must be >= 10 ms.',
     validator_samples_range: 'Number of samplings must be between 2 and 100.',
     validator_min_max_difference: 'Max and min must be different.',
+    edit_mode: 'Editing mode',
   };
 
   static const Map<String, dynamic> JA = {
@@ -352,5 +354,6 @@ mixin AppLocale {
     validator_sampling_period_min: 'サンプリング周期は10ms以上で設定してください',
     validator_samples_range: 'サンプリング数は2〜100の範囲で指定してください',
     validator_min_max_difference: '最大値と最小値は異なる必要があります',
+    edit_mode: '編集モード',
   };
 }

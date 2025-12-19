@@ -62,6 +62,8 @@ class _ConsoleEditPageState extends State<ConsoleEditPage> {
     return WillPopScope(
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.grey.shade200,
+          foregroundColor: Colors.black87,
           title: IntrinsicWidth(
             child: TextFormField(
               autofocus: widget.focusTitle,
@@ -91,6 +93,19 @@ class _ConsoleEditPageState extends State<ConsoleEditPage> {
                 },
                 icon: const Icon(Icons.check)),
           ],
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(28),
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                AppLocale.edit_mode.getString(context),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.black54,
+                      fontStyle: FontStyle.italic,
+                    ),
+              ),
+            ),
+          ),
         ),
         body: Padding(
           padding: const EdgeInsets.all(5),
