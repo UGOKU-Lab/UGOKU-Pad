@@ -54,8 +54,8 @@ class StartupWidget extends StatelessWidget {
                     '- Connection to your Bluetooth devices\n'
                     '- Control of the devices using BLE\n'
                     '\n'
-                    'Update:\n'
-                    '- Improved latency when using 2 or more channels simultaneously by switching to a data transfer method optimized for BLE.\n',
+                    '$versionName Update:\n'
+                    '- You can now directly switch between the usage screen and the editing screen of the Console.\n',
                   'body_ja':
                     'UGOKU Pad $versionNameへようこそ。\n'
                     'このアプリではESP32などのマイコンにBluetooth接続し、自分で作成したコンソールでモータの操作やセンサ値の表示など様々なことを行うことができます。\n'
@@ -67,8 +67,8 @@ class StartupWidget extends StatelessWidget {
                     '- Bluetoothデバイスへの接続\n'
                     '- BLEを使用したデバイスのコントロール\n'
                     '\n'
-                    '更新内容：\n'
-                    '- BLEに適したデータ転送方式に変更し、2ch以上同時使用時の遅延を改善'
+                    '$versionName 更新内容：\n'
+                    '- Consoleの使用画面と編集画面を直接遷移できるようにしました。\n'
 
                 },
               ),
