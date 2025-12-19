@@ -173,6 +173,7 @@ class _ConsoleListPageState extends State<ConsoleListPage> {
                   // Set the
                   pref.setString("recentlyUsed",
                       jsonEncode(_saves[index].parameter.toJson()));
+                  pref.setString("recentlyUsedTitle", _saves[index].title);
                 });
 
                 // Pop the tapped console.
@@ -324,12 +325,25 @@ class _ConsoleListPageState extends State<ConsoleListPage> {
     // Update a save object with the popped parameter.
     if (save != null) {
       _saves.removeAt(index);
-      _saves
-          .add(ConsoleSaveObject(_getUniqueTitle(save.title), save.parameter));
+      final newTitle = _getUniqueTitle(save.title);
+      final updatedSave = ConsoleSaveObject(newTitle, save.parameter);
+      _saves.add(updatedSave);
 
       setState(() {
         _saves.sort((a, b) => a.title.compareTo(b.title));
       });
+
+      final pref = await SharedPreferences.getInstance();
+      await pref.setStringList(
+        "consoles",
+        _saves.map((s) => jsonEncode(s.toJson())).toList(),
+      );
+      await pref.setString("recentlyUsed", jsonEncode(updatedSave.parameter.toJson()));
+      await pref.setString("recentlyUsedTitle", newTitle);
+
+      if (mounted) {
+        Navigator.of(context).pop(updatedSave.parameter);
+      }
     }
   }
 }

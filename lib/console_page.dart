@@ -1,5 +1,6 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -7,8 +8,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ugoku_console/privacy_page.dart';
 
 import 'bluetooth/device_connection_page.dart';
+import 'bluetooth/constants.dart';
 import 'bluetooth/service_provider.dart';
 import 'bluetooth/target_device_provider.dart';
+import 'console_edit_page.dart';
 import 'console_list_page.dart';
 import 'console_panel/console_panel_widget.dart';
 import 'console_panel/generation_parameter.dart';
@@ -27,7 +30,7 @@ class ConsolePage extends StatefulWidget {
 class _ConsolePageState extends State<ConsolePage> {
   late ConsolePanelParameter _save = widget.initialConsole;
 
-  bool _isFullScreen = false;
+  String? _consoleTitle;
 
   /// The latest target device to connect.
   BluetoothDevice? latestTargetDevice;
@@ -44,6 +47,8 @@ class _ConsolePageState extends State<ConsolePage> {
   Future<void> checkPrivacyPolicyStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool? hasAccepted = prefs.getBool('hasAcceptedPrivacyPolicy');
+
+    _consoleTitle ??= prefs.getString('recentlyUsedTitle');
 
     //await Future.delayed(const Duration(seconds: 1));
 
@@ -79,6 +84,38 @@ class _ConsolePageState extends State<ConsolePage> {
         ),
       );
     }
+  }
+
+  Future<void> _openConsoleEditor() async {
+    isEditingConsole = true;
+    isAddingConsole = false;
+
+    final initialSave = ConsoleSaveObject(
+      _consoleTitle ?? "Live Console",
+      _save.copy(),
+    );
+
+    final ConsoleSaveObject? result = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ConsoleEditPage(save: initialSave),
+      ),
+    );
+
+    if (!mounted || result == null) {
+      return;
+    }
+
+    setState(() {
+      _save = result.parameter;
+      _consoleTitle = result.title;
+    });
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      'recentlyUsed',
+      jsonEncode(result.parameter.toJson()),
+    );
+    await prefs.setString('recentlyUsedTitle', result.title);
   }
 
   @override
@@ -150,25 +187,12 @@ class _ConsolePageState extends State<ConsolePage> {
           ]);
         }),
         actions: [
-          _isFullScreen
-              ? IconButton(
-              onPressed: () {
-                SystemChrome.setEnabledSystemUIMode(
-                    SystemUiMode.edgeToEdge);
-                setState(() {
-                  _isFullScreen = false;
-                });
-              },
-              icon: const Icon(Icons.fullscreen_exit))
-              : IconButton(
-              onPressed: () {
-                SystemChrome.setEnabledSystemUIMode(
-                    SystemUiMode.immersiveSticky);
-                setState(() {
-                  _isFullScreen = true;
-                });
-              },
-              icon: const Icon(Icons.fullscreen))
+          IconButton(
+            onPressed: () {
+              _openConsoleEditor();
+            },
+            icon: const Icon(Icons.edit),
+          ),
         ],
         centerTitle: true,
         scrolledUnderElevation: 0,
@@ -207,8 +231,11 @@ class _ConsolePageState extends State<ConsolePage> {
 
                 // Create the selected console.
                 if (mounted && result != null) {
+                  final pref = await SharedPreferences.getInstance();
                   setState(() {
                     _save = result;
+                    _consoleTitle =
+                        pref.getString('recentlyUsedTitle') ?? _consoleTitle;
                   });
                 }
               },
