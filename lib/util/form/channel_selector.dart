@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../broadcaster_provider.dart';
+import '../AppLocale.dart';
 
 /// Creates a dropdown button to select a broadcast channel.
 class ChannelSelector extends ConsumerWidget {
@@ -42,17 +44,18 @@ class ChannelSelector extends ConsumerWidget {
           Container(
               height: kMinInteractiveDimension,
               alignment: Alignment.centerLeft,
-              child: const Text("Empty")),
+              child: Text(AppLocale.empty.getString(context))),
           ...availableChannels.map((chan) => Container(
               height: kMinInteractiveDimension,
               alignment: Alignment.centerLeft,
               child: Text(chan.name ?? chan.identifier))),
         ],
         items: [
-          const DropdownMenuItem(
+            DropdownMenuItem(
               child: ListTile(
-                  title: Text("Empty"),
-                  subtitle: Text("No channel to allocate."))),
+                title: Text(AppLocale.empty.getString(context)),
+                subtitle:
+                  Text(AppLocale.no_channel_to_allocate.getString(context)))),
           ...availableChannels.map((chan) => DropdownMenuItem(
               value: chan.identifier,
               child: ListTile(

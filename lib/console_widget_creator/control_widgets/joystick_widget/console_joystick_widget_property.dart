@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 
 import '../../../bluetooth/constants.dart';
 import '../../../util/form/channel_selector.dart';
@@ -9,6 +10,7 @@ import '../../../util/form/common_form_page.dart';
 import '../../../util/form/double_field.dart';
 import '../../console_widget_creator.dart';
 import '../../typed_console_widget_creator.dart';
+import 'package:ugoku_console/util/AppLocale.dart';
 
 /// Parameter of the console widget.
 class ConsoleJoystickWidgetProperty extends TypedConsoleWidgetProperty {
@@ -82,13 +84,13 @@ class ConsoleJoystickWidgetProperty extends TypedConsoleWidgetProperty {
   }
 
   @override
-  String? validate() {
+  String? validate(BuildContext context) {
     if (maxValueX <= minValueX) {
-      return "Max value must be greater than min value.";
+      return AppLocale.validator_min_less_than_max.getString(context);
     }
 
     if (maxValueY <= minValueY) {
-      return "Max value must be greater than min value.";
+      return AppLocale.validator_min_less_than_max.getString(context);
     }
 
     return null;
@@ -117,73 +119,77 @@ class ConsoleJoystickWidgetProperty extends TypedConsoleWidgetProperty {
         .push(
       MaterialPageRoute(
         builder: (context) => CommonFormPage(
-          title: "Property Edit",
+          title: AppLocale.property_edit.getString(context),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(""),
-              Text("Output Channel",
+              const SizedBox(height: 12),
+              Text(AppLocale.output_channel.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               ChannelSelector(
-                  labelText: "X Direction",
+                  labelText: AppLocale.x_direction.getString(context),
                   initialValue: newChannelX,
                   onChanged: (value) => newChannelX = value),
               ChannelSelector(
-                  labelText: "Y Direction",
+                  labelText: AppLocale.y_direction.getString(context),
                   initialValue: newChannelY,
                   onChanged: (value) => newChannelY = value),
-              const Text(""),
-              Text("Output X",
+              const SizedBox(height: 12),
+              Text(AppLocale.output_x.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               DoubleInputField(
-                  labelText: "Min Value",
+                  context: context,
+                  labelText: AppLocale.min_value.getString(context),
                   initValue: newMinValueX,
                   nullable: false,
                   onValueChange: (value) => newMinValueX = value!,
                   valueValidator: (value) {
                     if (value! >= newMaxValueX) {
-                      return "Min value must be less than max.";
+                      return AppLocale.validator_min_less_than_max;
                     }
                     return null;
                   }),
               DoubleInputField(
-                  labelText: "Max Value",
+                  context: context,
+                  labelText: AppLocale.max_value.getString(context),
                   initValue: newMaxValueX,
                   nullable: false,
                   onValueChange: (value) => newMaxValueX = value!,
                   valueValidator: (value) {
                     if (value! <= newMinValueX) {
-                      return "Max value must be greater than min.";
+                      return AppLocale.validator_min_less_than_max;
                     }
                     return null;
                   }),
-              const Text(""),
-              Text("Output Y",
+              const SizedBox(height: 12),
+              Text(AppLocale.output_y.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               DoubleInputField(
-                  labelText: "Min Value",
+                  context: context,
+                  labelText: AppLocale.min_value.getString(context),
                   initValue: newMinValueY,
                   nullable: false,
                   onValueChange: (value) => newMinValueY = value!,
                   valueValidator: (value) {
                     if (value! >= newMaxValueY) {
-                      return "Min value must be less than max.";
+                      return AppLocale.validator_min_less_than_max;
                     }
                     return null;
                   }),
               DoubleInputField(
-                  labelText: "Max Value",
+                  context: context,
+                  labelText: AppLocale.max_value.getString(context),
                   initValue: newMaxValueY,
                   nullable: false,
                   onValueChange: (value) => newMaxValueY = value!,
                   valueValidator: (value) {
                     if (value! <= newMinValueY) {
-                      return "Max value must be greater than min.";
+                      return AppLocale.validator_min_less_than_max;
                     }
                     return null;
                   }),
-              const Text(""),
-              Text("Color",
+              const SizedBox(height: 12),
+              Text(AppLocale.color.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               ColorSelector(
                   initialValue: lastColor,

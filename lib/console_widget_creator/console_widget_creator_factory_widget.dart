@@ -33,9 +33,9 @@ class ConsoleCreatorFactoryWidget extends StatelessWidget {
     // Control widgets.
     consoleButtonWidgetCreator,
     consoleToggleSwitchWidgetCreator,
-    consoleSliderWidgetCreator,
     consoleJoystickWidgetCreator,
     consoleAdjusterWidgetCreator,
+    consoleSliderWidgetCreator,
     consoleConnectorWidgetCreator,
     // Monitor widgets.
     consoleValueMonitorWidgetCreator,
@@ -119,11 +119,15 @@ class ConsoleCreatorFactoryWidget extends StatelessWidget {
             builder: (context, constraints) => ListView(
               children: [
                 ..._creators.map((creator) => creator.series).toSet().map(
-                      (series) => ExpansionTile(
-                    title: Text(series),
-                    children: _creators
-                        .where((creator) => creator.series == series)
-                        .map(
+                      (series) {
+                        final seriesLabel = _creators
+                            .firstWhere((creator) => creator.series == series)
+                            .seriesLabel(context);
+                        return ExpansionTile(
+                          title: Text(seriesLabel),
+                          children: _creators
+                              .where((creator) => creator.series == series)
+                              .map(
                           (creator) => SizedBox(
                         height: constraints.maxWidth / 4,
                         child: Stack(
@@ -144,11 +148,11 @@ class ConsoleCreatorFactoryWidget extends StatelessWidget {
                                       AlignmentDirectional.topStart,
                                       child: ListTile(
                                         title: Text(
-                                          creator.name,
+                                          creator.nameLabel(context),
                                           overflow: TextOverflow.fade,
                                         ),
                                         subtitle: Text(
-                                          creator.description,
+                                          creator.descriptionLabel(context),
                                           overflow: TextOverflow.fade,
                                         ),
                                       ),
@@ -168,9 +172,10 @@ class ConsoleCreatorFactoryWidget extends StatelessWidget {
                           ],
                         ),
                       ),
-                    )
-                        .toList(),
-                  ),
+                              )
+                                  .toList(),
+                        );
+                      },
                 ),
               ],
             ),
@@ -268,7 +273,7 @@ class _PropertyEditWidgetState extends State<_PropertyEditWidget> {
       _initialized
           ? (_prop != null
           ? widget.creator.previewBuilder(context, _prop!)
-          : ConsoleErrorWidgetCreator.propertyNotDetermined)
+          : ConsoleErrorWidgetCreator.propertyNotDetermined(context))
           : Container(),
       TextButton(
         style: TextButton.styleFrom(

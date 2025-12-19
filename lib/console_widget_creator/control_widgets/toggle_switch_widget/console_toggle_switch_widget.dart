@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 
 import '../../../bluetooth/constants.dart';
 import '../../../util/broadcaster/multi_channel_broadcaster.dart';
 import '../../../util/widget/console_widget_card.dart';
 import '../../console_error_widget_creator.dart';
 import 'console_toggle_switch_widget_property.dart';
+import 'package:ugoku_console/util/AppLocale.dart';
 
 class ConsoleToggleSwitchWidget extends StatefulWidget {
   final ConsoleToggleSwitchWidgetProperty property;
@@ -111,10 +113,11 @@ class _ConsoleToggleSwitchWidgetState extends State<ConsoleToggleSwitchWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final paramError = widget.property.validate();
+        final paramError = widget.property.validate(context);
     if (paramError != null) {
       return ConsoleErrorWidgetCreator.createWith(
-          brief: "Parameter Error", detail: paramError);
+          brief: AppLocale.parameter_error.getString(context),
+          detail: paramError);
     }
 
     return LayoutBuilder(

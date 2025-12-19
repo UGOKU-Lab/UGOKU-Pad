@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
+import 'package:ugoku_console/util/AppLocale.dart';
 
 class DoubleInputField extends TextFormField {
   final String? labelText;
@@ -36,6 +38,7 @@ class DoubleInputField extends TextFormField {
 
   DoubleInputField({
     super.key,
+    required BuildContext context,
     this.labelText,
     this.hintText,
     this.initValue,
@@ -83,27 +86,31 @@ class DoubleInputField extends TextFormField {
 
       if (!nullable && doubleValue == null) {
         if (value?.isEmpty ?? true) {
-          return "This field is required.";
+          return AppLocale.validator_required.getString(context);
         }
-        return "Must be a real number.";
+        return AppLocale.validator_real.getString(context);
       }
 
       if (doubleValue != null) {
         if (!allowInf && doubleValue == double.infinity) {
-          return "Infinity is not allowed.";
+          return AppLocale.validator_infinity.getString(context);
         }
         if (!allowNegativeInf && doubleValue == double.negativeInfinity) {
-          return "Negative infinity is not allowed.";
+          return AppLocale.validator_negative_infinity.getString(context);
         }
         if (!allowNaN && doubleValue.isNaN) {
-          return "Not a Number is not allowed.";
+          return AppLocale.validator_nan.getString(context);
         }
 
         if (minValue != null && doubleValue < minValue) {
-          return "Must be >= $minValue.";
+          return AppLocale.validator_min_value
+              .getString(context)
+              .replaceFirst('{value}', '$minValue');
         }
         if (maxValue != null && doubleValue > maxValue) {
-          return "Must be <= $maxValue.";
+          return AppLocale.validator_max_value
+              .getString(context)
+              .replaceFirst('{value}', '$maxValue');
         }
       }
 

@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:ugoku_console/util/AppLocale.dart';
+
 import '../../../broadcaster_provider.dart';
 import '../../typed_console_widget_creator.dart';
 import 'console_line_chart_widget.dart';
@@ -10,8 +12,11 @@ import 'console_line_chart_widget_property.dart';
 final consoleLineChartWidgetCreator = TypedConsoleWidgetCreator(
   ConsoleLineChartWidgetProperty.fromUntyped,
   name: "Line Chart",
+  localizedNameKey: AppLocale.widget_name_line_chart,
   description: "Displays a line chart.",
+  localizedDescriptionKey: AppLocale.widget_desc_line_chart,
   series: "Monitor Widgets",
+  localizedSeriesKey: AppLocale.widget_series_monitor,
   propertyCreator: ConsoleLineChartWidgetProperty.create,
   builder: (context, property) => Consumer(
     builder: (context, ref, _) => ConsoleLineChartWidget(

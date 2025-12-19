@@ -7,11 +7,16 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../util/form/common_form_page.dart';
 import '../../util/widget/console_widget_card.dart';
 import '../console_widget_creator.dart';
+import 'package:ugoku_console/util/AppLocale.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 
 final consoleNoteWidgetCreator = ConsoleWidgetCreator(
   name: "Note",
+  localizedNameKey: AppLocale.widget_name_note,
   description: "Displays a note.",
+  localizedDescriptionKey: AppLocale.widget_desc_note,
   series: "Decoration Widgets",
+  localizedSeriesKey: AppLocale.widget_series_decoration,
   builder: (context, property) {
     // Determine if the device language is Japanese
     final locale = Localizations.localeOf(context);
@@ -108,23 +113,26 @@ final consoleNoteWidgetCreator = ConsoleWidgetCreator(
     // If edit form is closed without saving, return null.
     CommonFormPage.show(
       context,
-      title: "Property Edit",
+      title: AppLocale.property_edit.getString(context),
       content: Column(children: [
         TextFormField(
           initialValue: newTitle,
-          decoration: const InputDecoration(labelText: "Title"),
+          decoration: InputDecoration(
+              labelText: AppLocale.title_field.getString(context)),
           autofocus: true,
           onChanged: (value) => newTitle = value,
         ),
         TextFormField(
           initialValue: newBody,
-          decoration: const InputDecoration(labelText: "Body"),
+          decoration: InputDecoration(
+              labelText: AppLocale.body_field.getString(context)),
           maxLines: null,
           onChanged: (value) => newBody = value,
         ),
         TextFormField(
           initialValue: newBodyJa,
-          decoration: const InputDecoration(labelText: "Body (Japanese)"),
+          decoration: InputDecoration(
+              labelText: AppLocale.body_field_ja.getString(context)),
           maxLines: null,
           onChanged: (value) => newBodyJa = value,
         ),

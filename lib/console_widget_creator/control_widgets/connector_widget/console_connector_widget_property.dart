@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 
 import '../../../bluetooth/constants.dart';
 import '../../../util/form/channel_selector.dart';
@@ -8,6 +9,7 @@ import '../../../util/form/color_selector.dart';
 import '../../../util/form/common_form_page.dart';
 import '../../console_widget_creator.dart';
 import '../../typed_console_widget_creator.dart';
+import 'package:ugoku_console/util/AppLocale.dart';
 
 /// Parameter of the console widget.
 class ConsoleConnectorWidgetProperty extends TypedConsoleWidgetProperty {
@@ -48,9 +50,9 @@ class ConsoleConnectorWidgetProperty extends TypedConsoleWidgetProperty {
   }
 
   @override
-  String? validate() {
+  String? validate(BuildContext context) {
     if (channelSrc != null && channelDst != null && channelSrc == channelDst) {
-      return "Source and destination must be different.";
+      return AppLocale.validator_source_destination.getString(context);
     }
 
     return null;
@@ -75,40 +77,42 @@ class ConsoleConnectorWidgetProperty extends TypedConsoleWidgetProperty {
         .push(
       MaterialPageRoute(
         builder: (context) => CommonFormPage(
-          title: "Property Edit",
+          title: AppLocale.property_edit.getString(context),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(""),
-              Text("Source Channel",
+              const SizedBox(height: 12),
+              Text(AppLocale.input_channel.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               ChannelSelector(
                 initialValue: newChannelSrc,
                 onChanged: (value) => newChannelSrc = value,
                 validator: (src) {
                   if (src != null && src == newChannelDst) {
-                    return "Source and destination must be different.";
+                    return AppLocale.validator_source_destination
+                        .getString(context);
                   }
 
                   return null;
                 },
               ),
-              const Text(""),
-              Text("Destination Channel",
+              const SizedBox(height: 12),
+              Text(AppLocale.output_channel.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               ChannelSelector(
                 initialValue: newChannelDst,
                 onChanged: (value) => newChannelDst = value,
                 validator: (dst) {
                   if (dst != null && dst == newChannelSrc) {
-                    return "Source and destination must be different.";
+                    return AppLocale.validator_source_destination
+                        .getString(context);
                   }
 
                   return null;
                 },
               ),
-              const Text(""),
-              Text("Color",
+              const SizedBox(height: 12),
+              Text(AppLocale.color.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               ColorSelector(
                   initialValue: lastColor,

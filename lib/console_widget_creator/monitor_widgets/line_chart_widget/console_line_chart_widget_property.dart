@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 
 import '../../../bluetooth/constants.dart';
 import '../../../util/form/channel_selector.dart';
@@ -10,6 +11,7 @@ import '../../../util/form/double_field.dart';
 import '../../../util/form/integer_field.dart';
 import '../../console_widget_creator.dart';
 import '../../typed_console_widget_creator.dart';
+import 'package:ugoku_console/util/AppLocale.dart';
 
 /// The property of the console widget.
 @immutable
@@ -61,9 +63,9 @@ class ConsoleLineChartWidgetProperty implements TypedConsoleWidgetProperty {
   };
 
   @override
-  String? validate() {
+  String? validate(BuildContext context) {
     if (maxValue == minValue) {
-      return "Max and min must be different.";
+      return AppLocale.validator_min_max_difference.getString(context);
     }
 
     return null;
@@ -94,21 +96,22 @@ class ConsoleLineChartWidgetProperty implements TypedConsoleWidgetProperty {
         .push(
       MaterialPageRoute(
         builder: (context) => CommonFormPage(
-          title: "Property Edit",
+          title: AppLocale.property_edit.getString(context),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(""),
-              Text("Input Channel",
+              const SizedBox(height: 12),
+              Text(AppLocale.input_channel.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               ChannelSelector(
                   initialValue: newChannel,
                   onChanged: (value) => newChannel = value),
-              const Text(""),
-              Text("Input Value",
+              const SizedBox(height: 12),
+              Text(AppLocale.input_value.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               DoubleInputField(
-                  labelText: "Min Value",
+                  context: context,
+                  labelText: AppLocale.min_value.getString(context),
                   initValue: newMinValue,
                   nullable: false,
                   onValueChange: (value) => newMinValue = value!,
@@ -119,7 +122,8 @@ class ConsoleLineChartWidgetProperty implements TypedConsoleWidgetProperty {
                     return null;
                   }),
               DoubleInputField(
-                  labelText: "Max Value",
+                  context: context,
+                  labelText: AppLocale.max_value.getString(context),
                   initValue: newMaxValue,
                   nullable: false,
                   onValueChange: (value) => newMaxValue = value!,
@@ -129,24 +133,27 @@ class ConsoleLineChartWidgetProperty implements TypedConsoleWidgetProperty {
                     }
                     return null;
                   }),
-              const Text(""),
-              Text("Sampling",
+                const SizedBox(height: 12),
+                Text(AppLocale.sampling.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               IntInputField(
-                  labelText: "Number of samplings",
+                  context: context,
+                  labelText:
+                  AppLocale.number_of_samplings.getString(context),
                   initValue: newSamples,
                   maxValue: 100,
                   minValue: 2,
                   nullable: false,
                   onValueChange: (value) => newSamples = value!),
               IntInputField(
-                  labelText: "Sampling period in [ms]",
+                  context: context,
+                  labelText: AppLocale.sampling_period.getString(context),
                   initValue: newPeriod,
                   minValue: 10,
                   nullable: false,
                   onValueChange: (value) => newPeriod = value!),
-              const Text(""),
-              Text("Color",
+                const SizedBox(height: 12),
+                Text(AppLocale.color.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               ColorSelector(
                   initialValue: lastColor,

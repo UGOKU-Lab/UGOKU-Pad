@@ -1,11 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ugoku_console/privacy_page.dart';
+import 'package:ugoku_console/util/AppLocale.dart';
 
 import 'bluetooth/device_connection_page.dart';
 import 'bluetooth/constants.dart';
@@ -91,7 +93,7 @@ class _ConsolePageState extends State<ConsolePage> {
     isAddingConsole = false;
 
     final initialSave = ConsoleSaveObject(
-      _consoleTitle ?? "Live Console",
+      _consoleTitle ?? AppLocale.live_console.getString(context),
       _save.copy(),
     );
 
@@ -162,14 +164,14 @@ class _ConsolePageState extends State<ConsolePage> {
               child: Padding(
                 padding: const EdgeInsets.only(right: 5),
                 child: latestTargetDevice != null
-                    ? Text(
-                    latestTargetDevice!.platformName,
+                  ? Text(
+                  latestTargetDevice!.platformName,
 
-                    style: const TextStyle(
-                        fontStyle: FontStyle.italic,
-                        decoration: TextDecoration.lineThrough))
-                    : const Text("No device connected",
-                    style: TextStyle(fontStyle: FontStyle.italic)),
+                  style: const TextStyle(
+                    fontStyle: FontStyle.italic,
+                    decoration: TextDecoration.lineThrough))
+                  : Text(AppLocale.no_device.getString(context),
+                  style: const TextStyle(fontStyle: FontStyle.italic)),
               ),
             ),
             latestTargetDevice != null
@@ -179,14 +181,14 @@ class _ConsolePageState extends State<ConsolePage> {
                   ref.read(targetDeviceProvider.notifier).state =
                       latestTargetDevice;
                 },
-                child: const Text("Connect"))
+                child: Text(AppLocale.connect.getString(context)))
                 : OutlinedButton(
                 onPressed: () {
                   // Push the page to select the device.
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => const DeviceConnectionPage()));
                 },
-                child: const Text("Select")),
+                child: Text(AppLocale.select.getString(context))),
           ]);
         }),
         actions: [
@@ -203,12 +205,12 @@ class _ConsolePageState extends State<ConsolePage> {
       drawer: Drawer(
         child: ListView(
           children: [
-            const DrawerHeader(
-              child: Text("Settings"),
+            DrawerHeader(
+              child: Text(AppLocale.settings.getString(context)),
             ),
             ListTile(
               leading: const Icon(Icons.bluetooth),
-              title: const Text("Device"),
+              title: Text(AppLocale.device.getString(context)),
               onTap: () {
                 // Pop the drawer.
                 Navigator.of(context).pop();
@@ -221,7 +223,7 @@ class _ConsolePageState extends State<ConsolePage> {
             ),
             ListTile(
               leading: const Icon(Icons.dashboard_customize),
-              title: const Text("Console"),
+              title: Text(AppLocale.console.getString(context)),
               onTap: () async {
                 // Pop the drawer.
                 Navigator.of(context).pop();
@@ -245,7 +247,7 @@ class _ConsolePageState extends State<ConsolePage> {
             ),
             ListTile(
               leading: const Icon(Icons.history_edu),
-              title: const Text("License"),
+              title: Text(AppLocale.license.getString(context)),
               onTap: () {
                 // Pop the drawer.
                 Navigator.of(context).pop();
@@ -260,7 +262,7 @@ class _ConsolePageState extends State<ConsolePage> {
                         applicationName: packageInfo.appName,
                         applicationVersion: packageInfo.version,
                         applicationLegalese:
-                            'Copyright (c) 2025 UGOKU Lab\nLicensed under the GNU General Public License v3.0',
+                            AppLocale.license_legalese.getString(context),
                       ),
                     ),
                   )),
@@ -269,7 +271,7 @@ class _ConsolePageState extends State<ConsolePage> {
             ),
             ListTile(
               leading: const Icon(Icons.book),
-              title: const Text("Terms"),
+              title: Text(AppLocale.terms.getString(context)),
               onTap: () {
                 // Pop the drawer.
                 Navigator.of(context).pop();
@@ -339,7 +341,7 @@ class ConsoleWidget extends StatelessWidget {
               cell.creator,
               property: cell.property!,
             )
-                : ConsoleErrorWidgetCreator.propertyNotDetermined,
+                : ConsoleErrorWidgetCreator.propertyNotDetermined(context),
           ));
     });
   }

@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:ugoku_console/bluetooth/constants.dart';
 import 'package:ugoku_console/util/form/integer_field.dart';
 import 'package:ugoku_console/util/widget/reshaper_widget.dart';
+import 'package:ugoku_console/util/AppLocale.dart';
 
 import 'console_list_page.dart';
 import 'console_panel/console_panel_widget.dart';
@@ -168,18 +170,18 @@ class _ConsoleEditPageState extends State<ConsoleEditPage> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text("Warning"),
-            content: const Text("Changes will be discarded. Continue?"),
+            title: Text(AppLocale.warning.getString(context)),
+            content: Text(AppLocale.discard_changes.getString(context)),
             actions: [
               TextButton(
-                child: const Text("Cancel"),
+                child: Text(AppLocale.cancel.getString(context)),
                 onPressed: () {
                   Navigator.of(context).pop();
                   shouldPop.complete(false);
                 },
               ),
               TextButton(
-                child: const Text("Yes"),
+                child: Text(AppLocale.yes.getString(context)),
                 onPressed: () {
                   // Reset lastColor
                   lastColor = defaultColorHex;
@@ -216,7 +218,8 @@ class _ConsoleEditPageState extends State<ConsoleEditPage> {
                   child: Column(
                     children: [
                       IntInputField(
-                        labelText: "# of Rows",
+                        context: context,
+                        labelText: AppLocale.grid_rows.getString(context),
                         hintText: "1, 2 ... 8",
                         minValue: 1,
                         maxValue: 8,
@@ -224,7 +227,8 @@ class _ConsoleEditPageState extends State<ConsoleEditPage> {
                         onValueChange: (n) => rows = n,
                       ),
                       IntInputField(
-                        labelText: "# of Columns",
+                        context: context,
+                        labelText: AppLocale.grid_columns.getString(context),
                         hintText: "1, 2 ... 8",
                         minValue: 1,
                         maxValue: 8,
@@ -237,11 +241,11 @@ class _ConsoleEditPageState extends State<ConsoleEditPage> {
               ),
               actions: [
                 TextButton(
-                  child: const Text("Cancel"),
+                  child: Text(AppLocale.cancel.getString(context)),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 TextButton(
-                  child: const Text("OK"),
+                  child: Text(AppLocale.ok.getString(context)),
                   onPressed: () {
                     final ok = formKey.currentState?.validate() ?? true;
 
@@ -297,7 +301,7 @@ class _ConsoleEditPageState extends State<ConsoleEditPage> {
                   ),
                   ListTile(
                     leading: const Icon(Icons.transform),
-                    title: const Text("Reshape"),
+                    title: Text(AppLocale.reshape.getString(context)),
                     onTap: () {
                       Navigator.of(context).pop();
                       // Start the reshape of the selected target.
@@ -306,7 +310,7 @@ class _ConsoleEditPageState extends State<ConsoleEditPage> {
                   ),
                   ListTile(
                     leading: const Icon(Icons.delete),
-                    title: const Text("Delete"),
+                    title: Text(AppLocale.delete.getString(context)),
                     onTap: () {
                       Navigator.of(context).pop();
                       // Remove the selected target.

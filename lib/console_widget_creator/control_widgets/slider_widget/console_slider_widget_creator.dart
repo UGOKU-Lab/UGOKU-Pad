@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ugoku_console/bluetooth/constants.dart';
 
+import 'package:ugoku_console/util/AppLocale.dart';
+
 import '../../../broadcaster_provider.dart';
 import '../../typed_console_widget_creator.dart';
 import 'console_slider_widget.dart';
@@ -10,8 +12,11 @@ import 'console_slider_widget_property.dart';
 final consoleSliderWidgetCreator = TypedConsoleWidgetCreator(
   ConsoleSliderWidgetProperty.fromUntyped,
   name: "Slider",
+  localizedNameKey: AppLocale.widget_name_slider,
   description: "Controls a value by vertical swipes.",
+  localizedDescriptionKey: AppLocale.widget_desc_slider,
   series: "Control Widgets",
+  localizedSeriesKey: AppLocale.widget_series_control,
   builder: (context, property) => Consumer(
     builder: (context, ref, _) => ConsoleSliderWidget(
       property: property,

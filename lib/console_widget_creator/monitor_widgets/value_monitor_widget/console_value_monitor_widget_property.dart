@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 
 import '../../../bluetooth/constants.dart';
 import '../../../util/form/channel_selector.dart';
@@ -9,6 +10,7 @@ import '../../../util/form/common_form_page.dart';
 import '../../../util/form/integer_field.dart';
 import '../../console_widget_creator.dart';
 import '../../typed_console_widget_creator.dart';
+import 'package:ugoku_console/util/AppLocale.dart';
 
 /// The property of the console widget.
 class ConsoleValueMonitorProperty implements TypedConsoleWidgetProperty {
@@ -41,9 +43,9 @@ class ConsoleValueMonitorProperty implements TypedConsoleWidgetProperty {
   };
 
   @override
-  String? validate() {
+  String? validate(BuildContext context) {
     if (displayFractionDigits < 0 || displayFractionDigits > 20) {
-      return "Display precision must be in the range 0-20.";
+      return AppLocale.validator_fraction_digits_range.getString(context);
     }
 
     return null;
@@ -71,21 +73,22 @@ class ConsoleValueMonitorProperty implements TypedConsoleWidgetProperty {
         .push(
       MaterialPageRoute(
         builder: (context) => CommonFormPage(
-          title: "Property Edit",
+          title: AppLocale.property_edit.getString(context),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(""),
-              Text("Input Channel",
+              const SizedBox(height: 12),
+              Text(AppLocale.input_channel.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               ChannelSelector(
                   initialValue: newChannel,
                   onChanged: (value) => newChannel = value),
-              const Text(""),
-              Text("Display",
+              const SizedBox(height: 12),
+              Text(AppLocale.display_section.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               IntInputField(
-                labelText: "Fraction digits",
+                context: context,
+                labelText: AppLocale.fraction_digits.getString(context),
                 initValue: newDisplayPrecision,
                 // Max and min are limited by [double.toStringAsFixed].
                 minValue: 0,
@@ -93,8 +96,8 @@ class ConsoleValueMonitorProperty implements TypedConsoleWidgetProperty {
                 nullable: false,
                 onValueChange: (value) => newDisplayPrecision = value!,
               ),
-              const Text(""),
-              Text("Color",
+              const SizedBox(height: 12),
+              Text(AppLocale.color.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               ColorSelector(
                   initialValue: lastColor,

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 
 import '../../../bluetooth/constants.dart';
 import '../../../util/form/channel_selector.dart';
@@ -9,6 +10,7 @@ import '../../../util/form/common_form_page.dart';
 import '../../../util/form/double_field.dart';
 import '../../console_widget_creator.dart';
 import '../../typed_console_widget_creator.dart';
+import 'package:ugoku_console/util/AppLocale.dart';
 
 /// Parameter of the console widget.
 class ConsoleButtonWidgetProperty extends TypedConsoleWidgetProperty {
@@ -53,9 +55,9 @@ class ConsoleButtonWidgetProperty extends TypedConsoleWidgetProperty {
   }
 
   @override
-  String? validate() {
+  String? validate(BuildContext context) {
     if ((initialValue) == (tappedValue)) {
-      return "Tapped value must not equal initial value.";
+      return AppLocale.validator_values_must_differ.getString(context);
     }
 
     return null;
@@ -82,45 +84,48 @@ class ConsoleButtonWidgetProperty extends TypedConsoleWidgetProperty {
         .push(
       MaterialPageRoute(
         builder: (context) => CommonFormPage(
-          title: "Property Edit",
+          title: AppLocale.property_edit.getString(context),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(""),
-              Text("Output Channel",
+            const SizedBox(height: 12),
+            Text(AppLocale.output_channel.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               ChannelSelector(
                   initialValue: newChannel,
                   onChanged: (value) => newChannel = value),
-              const Text(""),
-              Text("Button",
+            const SizedBox(height: 12),
+            Text(AppLocale.button_section.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               TextFormField(
                   initialValue: newButtonText,
-                  decoration: const InputDecoration(labelText: "Button Text"),
+              decoration: InputDecoration(
+                labelText: AppLocale.button_text.getString(context)),
                   onChanged: (value) => newButtonText = value),
-              const Text(""),
-              Text("Output Value",
+            const SizedBox(height: 12),
+            Text(AppLocale.output_value.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               DoubleInputField(
-                  labelText: "Initial Value",
+              context: context,
+              labelText: AppLocale.initial_value.getString(context),
                   initValue: newInitialValue,
                   nullable: false,
                   onValueChange: (value) => newInitialValue = value!,
                   valueValidator: (value) => null),
               DoubleInputField(
-                  labelText: "Tapped Value",
+              context: context,
+              labelText: AppLocale.tapped_value.getString(context),
                   initValue: newTappedValue,
                   nullable: false,
                   onValueChange: (value) => newTappedValue = value!,
                   valueValidator: (value) {
                     if (value! == newInitialValue) {
-                      return "Tapped value must not equal initial.";
+                return AppLocale.validator_values_must_differ;
                     }
                     return null;
                   }),
-              const Text(""),
-              Text("Color",
+            const SizedBox(height: 12),
+            Text(AppLocale.color.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               ColorSelector(
                   initialValue: lastColor,

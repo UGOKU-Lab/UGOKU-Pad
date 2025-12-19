@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 
 import '../../../bluetooth/constants.dart';
 import '../../../util/form/channel_selector.dart';
@@ -10,6 +11,7 @@ import '../../../util/form/double_field.dart';
 import '../../../util/form/integer_field.dart';
 import '../../console_widget_creator.dart';
 import '../../typed_console_widget_creator.dart';
+import 'package:ugoku_console/util/AppLocale.dart';
 
 /// The property of the console widget.
 @immutable
@@ -73,18 +75,18 @@ class ConsoleAdjusterWidgetProperty implements TypedConsoleWidgetProperty {
   };
 
   @override
-  String? validate() {
+  String? validate(BuildContext context) {
     if (maxValue <= minValue) {
-      return "Max value must be greater than min value.";
+      return AppLocale.validator_min_less_than_max.getString(context);
     }
     if (initialValue < minValue || maxValue < initialValue) {
-      return "Initial value must be between min and max.";
+      return AppLocale.validator_between.getString(context);
     }
     if (divisions < 1) {
-      return "Number of divisions must be a natural number.";
+      return AppLocale.validator_divisions_natural.getString(context);
     }
     if (displayFractionDigits < 0 || displayFractionDigits > 20) {
-      return "Display precision must be in the range 0-20.";
+      return AppLocale.validator_fraction_digits_range.getString(context);
     }
 
     return null;
@@ -119,43 +121,46 @@ class ConsoleAdjusterWidgetProperty implements TypedConsoleWidgetProperty {
         .push(
       MaterialPageRoute(
         builder: (context) => CommonFormPage(
-          title: "Property Edit",
+          title: AppLocale.property_edit.getString(context),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(""),
-              Text("Output Channel",
+              const SizedBox(height: 12),
+              Text(AppLocale.output_channel.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               ChannelSelector(
                   initialValue: newChannel,
                   onChanged: (value) => newChannel = value),
-              const Text(""),
-              Text("Output Value",
+              const SizedBox(height: 12),
+              Text(AppLocale.output_value.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               DoubleInputField(
-                  labelText: "Min Value",
+                  context: context,
+                  labelText: AppLocale.min_value.getString(context),
                   initValue: newMinValue,
                   nullable: false,
                   onValueChange: (value) => newMinValue = value!,
                   valueValidator: (value) {
                     if (value! >= newMaxValue) {
-                      return "Min value must be less than max.";
+                      return AppLocale.validator_min_less_than_max;
                     }
                     return null;
                   }),
               DoubleInputField(
-                  labelText: "Max Value",
+                  context: context,
+                  labelText: AppLocale.max_value.getString(context),
                   initValue: newMaxValue,
                   nullable: false,
                   onValueChange: (value) => newMaxValue = value!,
                   valueValidator: (value) {
                     if (value! <= newMinValue) {
-                      return "Max value must be less than max.";
+                      return AppLocale.validator_min_less_than_max;
                     }
                     return null;
                   }),
               DoubleInputField(
-                  labelText: "Initial Value",
+                  context: context,
+                  labelText: AppLocale.initial_value.getString(context),
                   initValue: newInitialValue,
                   onValueChange: (value) => newInitialValue = value,
                   valueValidator: (value) {
@@ -164,21 +169,23 @@ class ConsoleAdjusterWidgetProperty implements TypedConsoleWidgetProperty {
                     }
 
                     if (value < newMinValue || value > newMaxValue) {
-                      return "Initial value must be between min and max.";
+                      return AppLocale.validator_between;
                     }
                     return null;
                   }),
               IntInputField(
-                labelText: "Divisions",
+                context: context,
+                labelText: AppLocale.divisions.getString(context),
                 initValue: newDivisions,
                 minValue: 1,
                 onValueChange: (value) => newDivisions = value,
               ),
-              const Text(""),
-              Text("Display",
+              const SizedBox(height: 12),
+              Text(AppLocale.display_section.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               IntInputField(
-                labelText: "Fraction digits",
+                context: context,
+                labelText: AppLocale.fraction_digits.getString(context),
                 initValue: newDisplayFractionDigits,
                 // Max and min are limited by [double.toStringAsFixed].
                 minValue: 0,
@@ -186,8 +193,8 @@ class ConsoleAdjusterWidgetProperty implements TypedConsoleWidgetProperty {
                 nullable: false,
                 onValueChange: (value) => newDisplayFractionDigits = value!,
               ),
-              const Text(""),
-              Text("Color",
+              const SizedBox(height: 12),
+              Text(AppLocale.color.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               ColorSelector(
                   initialValue: lastColor,

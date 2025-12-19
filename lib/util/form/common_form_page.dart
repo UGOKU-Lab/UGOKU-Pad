@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
+import 'package:ugoku_console/util/AppLocale.dart';
 
 /// The page to display the common formatted form.
 class CommonFormPage extends StatelessWidget {
@@ -76,22 +78,22 @@ class CommonFormPage extends StatelessWidget {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text("Warning"),
-            content: const Text("Changes will be discarded. Continue?"),
+            title: Text(AppLocale.warning.getString(context)),
+            content: Text(AppLocale.discard_changes.getString(context)),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                   shouldPop.complete(false);
                 },
-                child: const Text("Cancel"),
+                child: Text(AppLocale.cancel.getString(context)),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                   shouldPop.complete(true);
                 },
-                child: const Text("Yes"),
+                child: Text(AppLocale.yes.getString(context)),
               ),
             ],
           ),

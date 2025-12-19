@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ugoku_console/bluetooth/constants.dart';
 
 import 'console_edit_page.dart';
 import 'console_panel/generation_parameter.dart';
+import 'package:ugoku_console/util/AppLocale.dart';
 
 /// The save object that contains the parameters to build the console.
 class ConsoleSaveObject {
@@ -106,7 +108,7 @@ class _ConsoleListPageState extends State<ConsoleListPage> {
       canPop: true,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("Consoles"),
+          title: Text(AppLocale.consoles.getString(context)),
           centerTitle: true,
           actions: [
             ...(_selectedIndexes.isEmpty
@@ -145,11 +147,12 @@ class _ConsoleListPageState extends State<ConsoleListPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text("Nothing here.",
+              Text(AppLocale.nothing_here.getString(context),
                   style: Theme.of(context).textTheme.bodyLarge),
-              const Text(""),
+              const SizedBox(height: 12),
               OutlinedButton(
-                  onPressed: _addConsole, child: const Text("Create new"))
+                  onPressed: _addConsole,
+                  child: Text(AppLocale.create_new.getString(context)))
             ],
           ),
         )
@@ -227,22 +230,22 @@ class _ConsoleListPageState extends State<ConsoleListPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Warning"),
-        content: const Text(
-            "The selected consoles will be lost permanently. Continue?"),
+        title: Text(AppLocale.warning.getString(context)),
+        content:
+        Text(AppLocale.delete_console_warning.getString(context)),
         actions: [
           TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 shouldDeleteCompleter.complete(false);
               },
-              child: const Text("No")),
+              child: Text(AppLocale.no.getString(context))),
           TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 shouldDeleteCompleter.complete(true);
               },
-              child: const Text("Yes")),
+              child: Text(AppLocale.yes.getString(context))),
         ],
       ),
     );
@@ -295,7 +298,7 @@ class _ConsoleListPageState extends State<ConsoleListPage> {
       pageBuilder: (context, animation, secondaryAnimation) =>
         ConsoleEditPage(
           save: ConsoleSaveObject(
-            _getUniqueTitle("Untitled"),
+            _getUniqueTitle(AppLocale.untitled.getString(context)),
             ConsolePanelParameter(rows: 2, columns: 2, cells: [])),
           focusTitle: true),
       transitionDuration: Duration.zero,

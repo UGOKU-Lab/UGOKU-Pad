@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 
 import '../../../bluetooth/constants.dart';
 import '../../../util/form/channel_selector.dart';
@@ -9,6 +10,7 @@ import '../../../util/form/common_form_page.dart';
 import '../../../util/form/double_field.dart';
 import '../../console_widget_creator.dart';
 import '../../typed_console_widget_creator.dart';
+import 'package:ugoku_console/util/AppLocale.dart';
 
 /// Parameter of the console widget.
 class ConsoleSliderWidgetProperty extends TypedConsoleWidgetProperty {
@@ -63,12 +65,12 @@ class ConsoleSliderWidgetProperty extends TypedConsoleWidgetProperty {
   }
 
   @override
-  String? validate() {
+  String? validate(BuildContext context) {
     if (maxValue <= minValue) {
-      return "Max value must be greater than min value.";
+      return AppLocale.validator_min_less_than_max.getString(context);
     }
     if (initialValue < minValue || maxValue < initialValue) {
-      return "Initial value must be between min and max.";
+      return AppLocale.validator_between.getString(context);
     }
 
     return null;
@@ -96,43 +98,46 @@ class ConsoleSliderWidgetProperty extends TypedConsoleWidgetProperty {
         .push(
       MaterialPageRoute(
         builder: (context) => CommonFormPage(
-          title: "Property Edit",
+          title: AppLocale.property_edit.getString(context),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(""),
-              Text("Output Channel",
+              const SizedBox(height: 12),
+              Text(AppLocale.output_channel.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               ChannelSelector(
                   initialValue: newChannel,
                   onChanged: (value) => newChannel = value),
-              const Text(""),
-              Text("Output Value",
+              const SizedBox(height: 12),
+              Text(AppLocale.output_value.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               DoubleInputField(
-                  labelText: "Min Value",
+                  context: context,
+                  labelText: AppLocale.min_value.getString(context),
                   initValue: newMinValue,
                   nullable: false,
                   onValueChange: (value) => newMinValue = value!,
                   valueValidator: (value) {
                     if (value! >= newMaxValue) {
-                      return "Min value must be less than max.";
+                      return AppLocale.validator_min_less_than_max;
                     }
                     return null;
                   }),
               DoubleInputField(
-                  labelText: "Max Value",
+                  context: context,
+                  labelText: AppLocale.max_value.getString(context),
                   initValue: newMaxValue,
                   nullable: false,
                   onValueChange: (value) => newMaxValue = value!,
                   valueValidator: (value) {
                     if (value! <= newMinValue) {
-                      return "Max value must be greater than min.";
+                      return AppLocale.validator_min_less_than_max;
                     }
                     return null;
                   }),
               DoubleInputField(
-                  labelText: "Initial Value",
+                  context: context,
+                  labelText: AppLocale.initial_value.getString(context),
                   initValue: newInitialValue,
                   onValueChange: (value) => newInitialValue = value,
                   valueValidator: (value) {
@@ -141,12 +146,12 @@ class ConsoleSliderWidgetProperty extends TypedConsoleWidgetProperty {
                     }
 
                     if (value < newMinValue || value > newMaxValue) {
-                      return "Initial value must be between min and max.";
+                      return AppLocale.validator_between;
                     }
                     return null;
                   }),
-              const Text(""),
-              Text("Color",
+              const SizedBox(height: 12),
+              Text(AppLocale.color.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               ColorSelector(
                   initialValue: lastColor,

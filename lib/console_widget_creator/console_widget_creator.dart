@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
+
+import 'package:ugoku_console/util/AppLocale.dart';
 
 import 'console_error_widget_creator.dart';
 
@@ -70,6 +73,15 @@ class ConsoleWidgetCreator {
   /// The series of the providing console widget.
   final String series;
 
+  /// Localization key for the widget name.
+  final String? localizedNameKey;
+
+  /// Localization key for the widget description.
+  final String? localizedDescriptionKey;
+
+  /// Localization key for the widget series.
+  final String? localizedSeriesKey;
+
   /// Creates a property to build a console widget.
   final ConsoleWidgetPropertyCreator propertyCreator;
 
@@ -82,7 +94,7 @@ class ConsoleWidgetCreator {
   ///
   /// The returned error detail will be shown in the error widget alternatively
   /// built. The returned null shows no error in the property.
-  final String? Function(ConsoleWidgetProperty)? propertyValidator;
+  final String? Function(BuildContext, ConsoleWidgetProperty)? propertyValidator;
 
   final ConsoleWidgetBuilder _builder;
   final PreviewConsoleWidgetBuilder? _previewBuilder;
@@ -91,11 +103,13 @@ class ConsoleWidgetCreator {
   /// Creates a builder of the console widget with a property.
   ConsoleWidgetBuilder get builder => (context, property) {
     // Validate the property if required.
-    final result = propertyValidator?.call(property);
+    final result = propertyValidator?.call(context, property);
 
     if (result != null) {
       return ConsoleErrorWidgetCreator.createWith(
-          brief: "Property Error", detail: result);
+        brief: AppLocale.property_error.getString(context),
+        detail: result,
+      );
     }
 
     return _builder(context, property);
@@ -105,11 +119,13 @@ class ConsoleWidgetCreator {
   /// property.
   PreviewConsoleWidgetBuilder get previewBuilder => (context, property) {
     // Validate the property if required.
-    final result = propertyValidator?.call(property);
+    final result = propertyValidator?.call(context, property);
 
     if (result != null) {
       return ConsoleErrorWidgetCreator.createWith(
-          brief: "Property Error", detail: result);
+        brief: AppLocale.property_error.getString(context),
+        detail: result,
+      );
     }
 
     return (_previewBuilder ?? _builder).call(context, property);
@@ -149,6 +165,9 @@ class ConsoleWidgetCreator {
     required this.name,
     required this.description,
     required this.series,
+    this.localizedNameKey,
+    this.localizedDescriptionKey,
+    this.localizedSeriesKey,
     required this.propertyCreator,
     required ConsoleWidgetBuilder builder,
     PreviewConsoleWidgetBuilder? previewBuilder,
@@ -158,4 +177,19 @@ class ConsoleWidgetCreator {
   })  : _builder = builder,
         _previewBuilder = previewBuilder,
         _sampleBuilder = sampleBuilder;
+
+  /// Returns localized widget name for display.
+  String nameLabel(BuildContext context) {
+    return localizedNameKey?.getString(context) ?? name;
+  }
+
+  /// Returns localized widget description for display.
+  String descriptionLabel(BuildContext context) {
+    return localizedDescriptionKey?.getString(context) ?? description;
+  }
+
+  /// Returns localized widget series for display.
+  String seriesLabel(BuildContext context) {
+    return localizedSeriesKey?.getString(context) ?? series;
+  }
 }

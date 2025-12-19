@@ -28,10 +28,10 @@ abstract class TypedConsoleWidgetProperty {
   /// Creates an untyped property of itself.
   ConsoleWidgetProperty toUntyped();
 
-  /// Validates self.
+  /// Validates self using the provided [context].
   ///
   /// Returns the error detail if any of validation is failed.
-  String? validate();
+  String? validate(BuildContext context);
 }
 
 /// The typed version of the [ConsoleWidgetCreator].
@@ -49,6 +49,9 @@ class TypedConsoleWidgetCreator<T extends TypedConsoleWidgetProperty>
         required super.name,
         required super.description,
         required super.series,
+        super.localizedNameKey,
+        super.localizedDescriptionKey,
+        super.localizedSeriesKey,
         required TypedConsoleWidgetPropertyCreator<T> propertyCreator,
         required TypedConsoleWidgetBuilder<T> builder,
         TypedPreviewConsoleWidgetBuilder<T>? previewBuilder,
@@ -65,7 +68,7 @@ class TypedConsoleWidgetCreator<T extends TypedConsoleWidgetProperty>
         previewBuilder(context, converter(property))
         : null,
     sampleProperty: sampleProperty?.toUntyped(),
-    propertyValidator: (prop) => converter(prop).validate(),
+    propertyValidator: (context, prop) => converter(prop).validate(context),
   );
 }
 

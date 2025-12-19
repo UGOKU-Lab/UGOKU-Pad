@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
+import 'package:ugoku_console/util/AppLocale.dart';
 
 class IntInputField extends TextFormField {
   final String? labelText;
@@ -6,7 +8,6 @@ class IntInputField extends TextFormField {
   final int? initValue;
   final int? minValue;
   final int? maxValue;
-
   /// Whether the value is nullable: not required.
   ///
   /// If false, checks if the value is not null before [onValueChange] and
@@ -18,6 +19,7 @@ class IntInputField extends TextFormField {
 
   IntInputField({
     super.key,
+    required BuildContext context,
     this.labelText,
     this.hintText,
     this.initValue,
@@ -26,7 +28,7 @@ class IntInputField extends TextFormField {
     this.nullable = true,
     this.onValueChange,
     this.valueValidator,
-  }) : super(
+  })  : super(
     initialValue: initValue?.toString(),
     decoration: InputDecoration(
         labelText: labelText != null || !nullable
@@ -55,17 +57,21 @@ class IntInputField extends TextFormField {
 
       if (!nullable && intValue == null) {
         if (value?.isEmpty ?? true) {
-          return "This field is required.";
+          return AppLocale.validator_required.getString(context);
         }
-        return "Must be an integer number.";
+        return AppLocale.validator_integer.getString(context);
       }
 
       if (intValue != null) {
         if (minValue != null && intValue < minValue) {
-          return "Must be >= $minValue.";
+          return AppLocale.validator_min_value
+              .getString(context)
+              .replaceFirst('{value}', '$minValue');
         }
         if (maxValue != null && intValue > maxValue) {
-          return "Must be <= $maxValue.";
+          return AppLocale.validator_max_value
+              .getString(context)
+              .replaceFirst('{value}', '$maxValue');
         }
       }
 

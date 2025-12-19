@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ugoku_console/bluetooth/service_provider.dart';
 import 'package:ugoku_console/bluetooth/target_device_provider.dart';
+import 'package:ugoku_console/util/AppLocale.dart';
 
 /// The page to connect a bluetooth device.
 class DeviceConnectionPage extends StatefulWidget {
@@ -26,36 +28,31 @@ class _DeviceConnectionPageState extends State<DeviceConnectionPage> {
 
   @override
   void initState() {
+    _scanResultSubscription = FlutterBluePlus.scanResults.listen((results) {
+      _scanResults = results;
 
-    if (Platform.isIOS) {
-      _scanResultSubscription = FlutterBluePlus.scanResults.listen((results) {
-        _scanResults = results;
+      if (mounted) setState(() {});
+    });
 
-        if (mounted) setState(() {});
-      });
+    _systemDevicesSubscription = FlutterBluePlus
+        .systemDevices([Guid("180F")])
+        .asStream()
+        .listen((results) {
+      _systemDevices = results;
 
-      _systemDevicesSubscription =
-      // `withServices` required on iOS, ignored on android
-      // List<Guid> withServices = [Guid("180F")];
-      // List<BluetoothDevice> devs = await FlutterBluePlus.systemDevices(withServices);
-      FlutterBluePlus.systemDevices([Guid("180F")]).asStream().listen((
-          results) {
-        _systemDevices = results;
+      if (mounted) setState(() {});
+    });
 
-        if (mounted) setState(() {});
-      });
+    _isScanningSubscription = FlutterBluePlus.isScanning.listen((isScanning) {
+      _isScanning = isScanning;
 
-      _isScanningSubscription = FlutterBluePlus.isScanning.listen((isScanning) {
-        _isScanning = isScanning;
+      if (mounted) setState(() {});
+    });
 
-        if (mounted) setState(() {});
-      });
-
+    if (Platform.isAndroid) {
+      _checkPermissions();
+    } else {
       _startDeviceScan();
-
-      if (Platform.isAndroid) {
-        _checkPermissions();
-      }
     }
 
     super.initState();
@@ -93,7 +90,7 @@ class _DeviceConnectionPageState extends State<DeviceConnectionPage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: const Text('Peripheral Devices'),
+        title: Text(AppLocale.device_page_title.getString(context)),
         centerTitle: true,
         actions: [
           IconButton(
@@ -116,11 +113,12 @@ class _DeviceConnectionPageState extends State<DeviceConnectionPage> {
                   : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('No devices found.'),
-                  const Text(''),
+                  Text(AppLocale.device_page_empty.getString(context)),
+                  const SizedBox(height: 12),
                   OutlinedButton(
                     onPressed: _startDeviceScan,
-                    child: const Text('Scan devices'),
+                    child:
+                    Text(AppLocale.device_page_scan.getString(context)),
                   ),
                 ],
               ),
@@ -177,37 +175,15 @@ class _DeviceConnectionPageState extends State<DeviceConnectionPage> {
   }
 
   Future _startDeviceScan() async {
-    if (Platform.isIOS) {
-      await FlutterBluePlus.startScan(timeout: const Duration(seconds: 15));
-    } else {
-      if (!_isScanning) {
-        FlutterBluePlus.setLogLevel(LogLevel.none, color:false);
-
-        await FlutterBluePlus.startScan(timeout: const Duration(seconds: 15));
-
-        _scanResultSubscription = FlutterBluePlus.scanResults.listen((results) {
-          _scanResults = results;
-
-          if (mounted) setState(() {});
-        });
-
-        _systemDevicesSubscription =
-        // `withServices` required on iOS, ignored on android
-        // List<Guid> withServices = [Guid("180F")];
-        // List<BluetoothDevice> devs = await FlutterBluePlus.systemDevices(withServices);
-        FlutterBluePlus.systemDevices([Guid("180F")]).asStream().listen((results) {
-          _systemDevices = results;
-
-          if (mounted) setState(() {});
-        });
-
-        _isScanningSubscription = FlutterBluePlus.isScanning.listen((isScanning) {
-          _isScanning = isScanning;
-
-          if (mounted) setState(() {});
-        });
-      }
+    if (_isScanning) {
+      return;
     }
+
+    if (Platform.isAndroid) {
+      FlutterBluePlus.setLogLevel(LogLevel.none, color: false);
+    }
+
+    await FlutterBluePlus.startScan(timeout: const Duration(seconds: 15));
   }
 
   Widget _buildDeviceTitle(BluetoothDevice device) {

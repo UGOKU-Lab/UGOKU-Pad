@@ -1,4 +1,3 @@
-import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -38,29 +37,47 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   final FlutterLocalization _localization = FlutterLocalization.instance;
+  late String _currentLanguageCode;
 
   @override
   void initState() {
-
-    // Get the device's current locale language code
-    String deviceLanguage = ui.window.locale.languageCode;
-
-    // Set the default language based on the device language
-    String initLanguageCode = (deviceLanguage == 'ja') ? 'ja' : 'en';
-
-    print('initLanguageCode: $initLanguageCode');
+    WidgetsBinding.instance.addObserver(this);
+    final initLanguageCode = _resolveSupportedLanguage(
+      WidgetsBinding.instance.platformDispatcher.locale.languageCode,
+    );
+    _currentLanguageCode = initLanguageCode;
 
     _localization.init(
-      mapLocales: [
-        const MapLocale('en', AppLocale.EN),
-        const MapLocale('ja', AppLocale.JA)
+      mapLocales: const [
+        MapLocale('en', AppLocale.EN),
+        MapLocale('ja', AppLocale.JA),
       ],
       initLanguageCode: initLanguageCode,
     );
     _localization.onTranslatedLanguage = _onTranslatedLanguage;
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeLocales(List<Locale>? locales) {
+    final locale = locales?.first ?? WidgetsBinding.instance.platformDispatcher.locale;
+    final nextCode = _resolveSupportedLanguage(locale.languageCode);
+    if (nextCode != _currentLanguageCode) {
+      _currentLanguageCode = nextCode;
+      _localization.translate(nextCode);
+    }
+  }
+
+  String _resolveSupportedLanguage(String? code) {
+    return code == 'ja' ? 'ja' : 'en';
   }
 
   // the setState function here is a must to add

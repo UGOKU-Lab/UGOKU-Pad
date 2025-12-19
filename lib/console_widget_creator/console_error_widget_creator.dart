@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
+
+import 'package:ugoku_console/util/AppLocale.dart';
 
 import 'console_widget_creator.dart';
 
@@ -30,10 +33,12 @@ class ConsoleErrorWidgetCreator extends ConsoleWidgetCreator {
 
   /// Creates an error widget that displays the error related to the console
   /// widget creation with no property.
-  static Widget get propertyNotDetermined => const _ConsoleErrorWidget({
-    "brief": "Property Error",
-    "detail": "The property is not determined yet.",
-  });
+  static Widget propertyNotDetermined(BuildContext context) {
+    return _ConsoleErrorWidget({
+      "brief": AppLocale.property_error.getString(context),
+      "detail": AppLocale.property_not_determined.getString(context),
+    });
+  }
 }
 
 /// Displays an error.

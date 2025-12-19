@@ -20,9 +20,10 @@ class _PrivacyPageState extends State<PrivacyPage> {
 
   Future<String> loadPrivacyPolicy() async {
     try {
-      return await rootBundle.loadString(AppLocale.privacy_file.getString(context));
+      return await rootBundle
+          .loadString(AppLocale.privacy_file.getString(context));
     } catch (e) {
-      throw Exception('Failed to load privacy policy');
+      throw Exception(AppLocale.privacy_load_failed.getString(context));
     }
   }
 
@@ -36,7 +37,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return const Text('Failed to load privacy policy.');
+            return Text(AppLocale.privacy_load_failed.getString(context));
           } else if (snapshot.hasData) {
             return SizedBox(
               width: double.maxFinite, // Ensures the dialog takes up available width
@@ -48,7 +49,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
               ),
             );
           } else {
-            return const Text('No data available.');
+            return Text(AppLocale.privacy_no_data.getString(context));
           }
         },
       ),
