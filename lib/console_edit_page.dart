@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:ugoku_console/bluetooth/constants.dart';
 import 'package:ugoku_console/util/form/integer_field.dart';
@@ -59,11 +60,25 @@ class _ConsoleEditPageState extends State<ConsoleEditPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final bool isDarkTheme = theme.brightness == Brightness.dark;
+    final Color headerColor =
+        isDarkTheme ? Colors.grey.shade700 : Colors.grey.shade200;
+    final Color headerForeground =
+        isDarkTheme ? Colors.white : Colors.black87;
+
     return WillPopScope(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.grey.shade200,
-          foregroundColor: Colors.black87,
+          backgroundColor: headerColor,
+          foregroundColor: headerForeground,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: headerColor,
+            statusBarIconBrightness:
+                isDarkTheme ? Brightness.light : Brightness.dark,
+            statusBarBrightness:
+                isDarkTheme ? Brightness.dark : Brightness.light,
+          ),
           title: IntrinsicWidth(
             child: TextFormField(
               autofocus: widget.focusTitle,
@@ -94,13 +109,14 @@ class _ConsoleEditPageState extends State<ConsoleEditPage> {
                 icon: const Icon(Icons.check)),
           ],
           bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(28),
+            preferredSize: const Size.fromHeight(32),
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 8),
+              padding: const EdgeInsets.only(top: 8, bottom: 4),
               child: Text(
                 AppLocale.edit_mode.getString(context),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.black54,
+                      color:
+                          isDarkTheme ? Colors.white70 : Colors.black54,
                       fontStyle: FontStyle.italic,
                     ),
               ),

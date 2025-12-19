@@ -174,6 +174,7 @@ class _ConsolePageState extends State<ConsolePage> {
                   style: const TextStyle(fontStyle: FontStyle.italic)),
               ),
             ),
+            const SizedBox(width: 8),
             latestTargetDevice != null
                 ? OutlinedButton(
                 onPressed: () {
