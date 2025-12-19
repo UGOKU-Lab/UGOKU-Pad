@@ -291,11 +291,15 @@ class _ConsoleListPageState extends State<ConsoleListPage> {
 
     // Push the edit page.
     final ConsoleSaveObject? save =
-    await Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => ConsoleEditPage(
-          save: ConsoleSaveObject(_getUniqueTitle("Untitled"),
-              ConsolePanelParameter(rows: 2, columns: 2, cells: [])),
+    await Navigator.of(context).push(PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+        ConsoleEditPage(
+          save: ConsoleSaveObject(
+            _getUniqueTitle("Untitled"),
+            ConsolePanelParameter(rows: 2, columns: 2, cells: [])),
           focusTitle: true),
+      transitionDuration: Duration.zero,
+      reverseTransitionDuration: Duration.zero,
     ));
 
     // Add a save object with the popped parameter.
@@ -318,8 +322,11 @@ class _ConsoleListPageState extends State<ConsoleListPage> {
 
     // Push the edit page.
     final ConsoleSaveObject? save =
-    await Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => ConsoleEditPage(save: _saves[index]),
+    await Navigator.of(context).push(PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          ConsoleEditPage(save: _saves[index]),
+      transitionDuration: Duration.zero,
+      reverseTransitionDuration: Duration.zero,
     ));
 
     // Update a save object with the popped parameter.

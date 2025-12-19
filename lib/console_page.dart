@@ -96,8 +96,11 @@ class _ConsolePageState extends State<ConsolePage> {
     );
 
     final ConsoleSaveObject? result = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ConsoleEditPage(save: initialSave),
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ConsoleEditPage(save: initialSave),
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
       ),
     );
 
