@@ -231,8 +231,14 @@ class _ConsolePageState extends State<ConsolePage> {
 
                 // Push a page for editing, then get the result.
                 ConsolePanelParameter? result =
-                await Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const ConsoleListPage(),
+                await Navigator.of(context).push(PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      const ConsoleListPage(),
+                  transitionDuration: Duration.zero,
+                  reverseTransitionDuration: Duration.zero,
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) =>
+                          child,
                 ));
 
                 // Create the selected console.

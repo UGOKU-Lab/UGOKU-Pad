@@ -82,12 +82,14 @@ class ConsoleListPage extends StatefulWidget {
 class _ConsoleListPageState extends State<ConsoleListPage> {
   List<ConsoleSaveObject> _saves = [];
   final Set<int> _selectedIndexes = {};
+  SharedPreferences? _prefs;
 
   bool get _inSelectMode => _selectedIndexes.isNotEmpty;
 
   @override
   void initState() {
     SharedPreferences.getInstance().then((pref) {
+      _prefs = pref;
       setState(() {
         _saves = pref
             .getStringList("consoles")
@@ -213,6 +215,36 @@ class _ConsoleListPageState extends State<ConsoleListPage> {
     );
   }
 
+  void _persistSaves(
+    List<ConsoleSaveObject> saves, {
+    ConsoleSaveObject? recentlyUsed,
+  }) {
+    final encodedSaves =
+        saves.map((save) => jsonEncode(save.toJson())).toList();
+    final recentlyUsedJson = recentlyUsed != null
+        ? jsonEncode(recentlyUsed.parameter.toJson())
+        : null;
+    final recentlyUsedTitle = recentlyUsed?.title;
+
+    void persist(SharedPreferences pref) {
+      pref.setStringList("consoles", encodedSaves);
+      if (recentlyUsedJson != null) {
+        pref.setString("recentlyUsed", recentlyUsedJson);
+      }
+      if (recentlyUsedTitle != null) {
+        pref.setString("recentlyUsedTitle", recentlyUsedTitle);
+      }
+    }
+
+    final pref = _prefs;
+    if (pref != null) {
+      persist(pref);
+      return;
+    }
+
+    SharedPreferences.getInstance().then(persist);
+  }
+
   /// Toggles the selection of the item indexed at [index].
   void _toggleSelection(int index) {
     // Remove if already selected, otherwise add.
@@ -272,9 +304,10 @@ class _ConsoleListPageState extends State<ConsoleListPage> {
   /// Returns the unique title begins with the [title].
   ///
   /// The serial number may be appended to the tail.
-  String _getUniqueTitle(String title) {
+  String _getUniqueTitle(String title, {List<ConsoleSaveObject>? saves}) {
     final baseTitle = title;
-    final existingTitles = _saves.map((save) => save.title).toList();
+    final existingTitles =
+        (saves ?? _saves).map((save) => save.title).toList();
     int serialNo = 1;
 
     // Determine the title: "title #".
@@ -288,7 +321,6 @@ class _ConsoleListPageState extends State<ConsoleListPage> {
 
   /// Adds a console.
   Future _addConsole() async {
-
     isAddingConsole = true;
     isEditingConsole = false;
 
@@ -305,15 +337,29 @@ class _ConsoleListPageState extends State<ConsoleListPage> {
       reverseTransitionDuration: Duration.zero,
     ));
 
-    // Add a save object with the popped parameter.
-    if (save != null) {
-      _saves
-          .add(ConsoleSaveObject(_getUniqueTitle(save.title), save.parameter));
+    if (save == null) {
+      return;
     }
 
-    // Renew the list.
+    final newTitle = _getUniqueTitle(save.title);
+    final newSave = ConsoleSaveObject(newTitle, save.parameter);
+    final updatedSaves = List<ConsoleSaveObject>.from(_saves)
+      ..add(newSave)
+      ..sort((a, b) => a.title.compareTo(b.title));
+
+    _persistSaves(updatedSaves, recentlyUsed: newSave);
+
+    if (!mounted) {
+      return;
+    }
+
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop(newSave.parameter);
+      return;
+    }
+
     setState(() {
-      _saves.sort((a, b) => a.title.compareTo(b.title));
+      _saves = updatedSaves;
     });
   }
 
@@ -334,26 +380,27 @@ class _ConsoleListPageState extends State<ConsoleListPage> {
 
     // Update a save object with the popped parameter.
     if (save != null) {
-      _saves.removeAt(index);
-      final newTitle = _getUniqueTitle(save.title);
+      final updatedSaves = List<ConsoleSaveObject>.from(_saves)
+        ..removeAt(index);
+      final newTitle = _getUniqueTitle(save.title, saves: updatedSaves);
       final updatedSave = ConsoleSaveObject(newTitle, save.parameter);
-      _saves.add(updatedSave);
+      updatedSaves.add(updatedSave);
+      updatedSaves.sort((a, b) => a.title.compareTo(b.title));
+
+      _persistSaves(updatedSaves, recentlyUsed: updatedSave);
+
+      if (!mounted) {
+        return;
+      }
+
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop(updatedSave.parameter);
+        return;
+      }
 
       setState(() {
-        _saves.sort((a, b) => a.title.compareTo(b.title));
+        _saves = updatedSaves;
       });
-
-      final pref = await SharedPreferences.getInstance();
-      await pref.setStringList(
-        "consoles",
-        _saves.map((s) => jsonEncode(s.toJson())).toList(),
-      );
-      await pref.setString("recentlyUsed", jsonEncode(updatedSave.parameter.toJson()));
-      await pref.setString("recentlyUsedTitle", newTitle);
-
-      if (mounted) {
-        Navigator.of(context).pop(updatedSave.parameter);
-      }
     }
   }
 }
