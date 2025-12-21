@@ -311,7 +311,7 @@ mixin AppLocale {
     widget_series_monitor: 'モニターウィジェット',
     widget_series_text: 'テキストウィジェット',
     widget_series_system: 'システムウィジェット',
-    widget_name_value_monitor: '値モニター',
+    widget_name_value_monitor: '数値モニター',
     widget_desc_value_monitor: '値を表示します',
     widget_name_line_chart: 'ラインチャート',
     widget_desc_line_chart: '折れ線グラフを表示します',

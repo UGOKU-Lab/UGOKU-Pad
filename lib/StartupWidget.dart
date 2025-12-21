@@ -55,7 +55,8 @@ class StartupWidget extends StatelessWidget {
                     '- Control of the devices using BLE\n'
                     '\n'
                     '$versionName Update:\n'
-                    '- You can now directly switch between the usage screen and the editing screen of the Console.\n',
+                    '- You can now directly switch between the usage screen and the editing screen of the Console.\n'
+                    '- You can now add title text to the Toggle Switch, Value Monitor, and Line Chart widgets.\n'
                   'body_ja':
                     'UGOKU Pad $versionNameへようこそ。\n'
                     'このアプリではESP32などのマイコンにBluetooth接続し、自分で作成したコンソールでモータの操作やセンサ値の表示など様々なことを行うことができます。\n'
@@ -69,6 +70,7 @@ class StartupWidget extends StatelessWidget {
                     '\n'
                     '$versionName 更新内容：\n'
                     '- Consoleの使用画面と編集画面を直接遷移できるようにしました。\n'
+                    '- トグルスイッチ、数値モニター、ラインチャートのウィジェットにタイトルテキストを追加できるようになりました。\n'
 
                 },
               ),
