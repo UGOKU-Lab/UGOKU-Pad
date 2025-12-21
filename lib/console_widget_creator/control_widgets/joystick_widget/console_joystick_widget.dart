@@ -32,6 +32,9 @@ class _ConsoleJoystickWidgetState extends State<ConsoleJoystickWidget> {
   late double _rateX;
   late double _rateY;
 
+  bool get _hasX => widget.property.channelX != null;
+  bool get _hasY => widget.property.channelY != null;
+
   //double? _prevValueX;
   //double? _prevValueY;
   StreamSubscription? _subscriptionX;
@@ -39,9 +42,12 @@ class _ConsoleJoystickWidgetState extends State<ConsoleJoystickWidget> {
 
   /// Sets the value and adds the value to the sink.
   void _setRate(double rateX, double rateY, {bool broadcast = true}) {
+    final lockedRateX = _hasX ? rateX : 0.5;
+    final lockedRateY = _hasY ? rateY : 0.5;
+
     setState(() {
-      _rateX = rateX.clamp(0, 1);
-      _rateY = rateY.clamp(0, 1);
+      _rateX = lockedRateX.clamp(0, 1);
+      _rateY = lockedRateY.clamp(0, 1);
     });
 
     final valueX =
@@ -203,14 +209,7 @@ class _ConsoleJoystickWidgetState extends State<ConsoleJoystickWidget> {
                         color: hexToColor(widget.property.color.toString()))),
               ),
               Center(
-                child: Icon(
-                  Icons.control_camera,
-                  size: _getSquareSize(constraints) / 2,
-                  color: Color.lerp(
-                      Theme.of(context).colorScheme.surface,
-                      hexToColor(widget.property.color.toString()),
-                      (_rateX - 0.5).abs() + (_rateY - 0.5).abs()),
-                ),
+                child: _buildAxisIcon(constraints),
               ),
               // Gesture handle.
               GestureDetector(
@@ -226,8 +225,8 @@ class _ConsoleJoystickWidgetState extends State<ConsoleJoystickWidget> {
                 },
                 child: HandleWidget(
                   onValueChange: (dx, dy) => _setRate(
-                    dx / constraints.maxWidth + 0.5,
-                    -dy / constraints.maxHeight + 0.5,
+                    _hasX ? dx / constraints.maxWidth + 0.5 : 0.5,
+                    _hasY ? -dy / constraints.maxHeight + 0.5 : 0.5,
                   ),
                   onValueFix: () {
                     //print("handle_widget: onValueFix1");
@@ -249,6 +248,64 @@ class _ConsoleJoystickWidgetState extends State<ConsoleJoystickWidget> {
     );
   }
 
+  Widget _buildAxisIcon(BoxConstraints constraints) {
+    final iconSize = _getSquareSize(constraints) / 2;
+    final iconColor = Color.lerp(
+        Theme.of(context).colorScheme.surface,
+        hexToColor(widget.property.color.toString()),
+        (_rateX - 0.5).abs() + (_rateY - 0.5).abs());
+    final icon = Icon(
+      Icons.control_camera,
+      size: iconSize,
+      color: iconColor,
+    );
+
+    if (_hasX && _hasY) {
+      return icon;
+    }
+
+    if (!_hasX && _hasY) {
+      return ClipRect(
+        clipper: const _JoystickAxisClipper(clipX: true),
+        child: icon,
+      );
+    }
+
+    if (_hasX && !_hasY) {
+      return ClipRect(
+        clipper: const _JoystickAxisClipper(clipY: true),
+        child: icon,
+      );
+    }
+
+    return icon;
+  }
+
   static double _getSquareSize(BoxConstraints constraints) =>
       min(constraints.maxHeight, constraints.maxWidth);
+}
+
+class _JoystickAxisClipper extends CustomClipper<Rect> {
+  const _JoystickAxisClipper({this.clipX = false, this.clipY = false});
+
+  final bool clipX;
+  final bool clipY;
+
+  @override
+  Rect getClip(Size size) {
+    const double axisInsetFactor = 8 / 24;
+    final double insetX = clipX ? size.width * axisInsetFactor : 0.0;
+    final double insetY = clipY ? size.height * axisInsetFactor : 0.0;
+    return Rect.fromLTWH(
+      insetX,
+      insetY,
+      size.width - insetX * 2,
+      size.height - insetY * 2,
+    );
+  }
+
+  @override
+  bool shouldReclip(covariant _JoystickAxisClipper oldClipper) {
+    return clipX != oldClipper.clipX || clipY != oldClipper.clipY;
+  }
 }
