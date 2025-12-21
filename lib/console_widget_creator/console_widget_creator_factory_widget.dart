@@ -40,7 +40,7 @@ class ConsoleCreatorFactoryWidget extends StatelessWidget {
     // Monitor widgets.
     consoleValueMonitorWidgetCreator,
     consoleLineChartWidgetCreator,
-    // Decoration widgets.
+    // Text Widgets.
     consoleHeadlineTextWidgetCreator,
     consoleTitleTextWidgetCreator,
     consoleNoteWidgetCreator,

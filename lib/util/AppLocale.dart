@@ -68,7 +68,7 @@ mixin AppLocale {
   static const String license_legalese = 'license_legalese';
   static const String widget_series_control = 'widget_series_control';
   static const String widget_series_monitor = 'widget_series_monitor';
-  static const String widget_series_decoration = 'widget_series_decoration';
+  static const String widget_series_text = 'widget_series_text';
   static const String widget_series_system = 'widget_series_system';
   static const String widget_name_value_monitor = 'widget_name_value_monitor';
   static const String widget_desc_value_monitor = 'widget_desc_value_monitor';
@@ -187,7 +187,7 @@ mixin AppLocale {
       'Copyright (c) 2025 UGOKU Lab\nLicensed under the GNU General Public License v3.0',
     widget_series_control: 'Control Widgets',
     widget_series_monitor: 'Monitor Widgets',
-    widget_series_decoration: 'Decoration Widgets',
+    widget_series_text: 'Text Widgets',
     widget_series_system: 'System Widgets',
     widget_name_value_monitor: 'Value Monitor',
     widget_desc_value_monitor: 'Displays a value.',
@@ -309,7 +309,7 @@ mixin AppLocale {
       'Copyright (c) 2025 UGOKU Lab\nGNU General Public License v3.0 に基づきライセンスされています',
     widget_series_control: 'コントロールウィジェット',
     widget_series_monitor: 'モニターウィジェット',
-    widget_series_decoration: 'テキストウィジェット',
+    widget_series_text: 'テキストウィジェット',
     widget_series_system: 'システムウィジェット',
     widget_name_value_monitor: '値モニター',
     widget_desc_value_monitor: '値を表示します',

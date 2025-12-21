@@ -15,8 +15,8 @@ final consoleTitleTextWidgetCreator = ConsoleWidgetCreator(
   localizedNameKey: AppLocale.widget_name_title_text,
   description: "Displays a title text.",
   localizedDescriptionKey: AppLocale.widget_desc_title_text,
-  series: "Decoration Widgets",
-  localizedSeriesKey: AppLocale.widget_series_decoration,
+  series: "Text Widgets",
+  localizedSeriesKey: AppLocale.widget_series_text,
   builder: (context, property) => Container(
     alignment: Alignment.centerLeft,
     child: Text(

@@ -15,8 +15,8 @@ final consoleNoteWidgetCreator = ConsoleWidgetCreator(
   localizedNameKey: AppLocale.widget_name_note,
   description: "Displays a note.",
   localizedDescriptionKey: AppLocale.widget_desc_note,
-  series: "Decoration Widgets",
-  localizedSeriesKey: AppLocale.widget_series_decoration,
+  series: "Text Widgets",
+  localizedSeriesKey: AppLocale.widget_series_text,
   builder: (context, property) {
     // Determine if the device language is Japanese
     final locale = Localizations.localeOf(context);

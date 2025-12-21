@@ -15,8 +15,8 @@ final consoleHeadlineTextWidgetCreator = ConsoleWidgetCreator(
   localizedNameKey: AppLocale.widget_name_headline_text,
   description: "Displays a headline text.",
   localizedDescriptionKey: AppLocale.widget_desc_headline_text,
-  series: "Decoration Widgets",
-  localizedSeriesKey: AppLocale.widget_series_decoration,
+  series: "Text Widgets",
+  localizedSeriesKey: AppLocale.widget_series_text,
   builder: (context, property) => Container(
     alignment: Alignment.centerLeft,
     child: Text(
