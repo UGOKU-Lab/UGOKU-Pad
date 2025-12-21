@@ -16,13 +16,19 @@ import 'package:ugoku_console/util/AppLocale.dart';
 class ConsoleToggleSwitchWidgetProperty extends TypedConsoleWidgetProperty {
   final String? channel;
   final String? color;
+  final String labelText;
   final double initialValue;
   final double reversedValue;
 
   /// Creates the parameter.
   ConsoleToggleSwitchWidgetProperty(
-      {this.channel, String? color, double? initialValue, double? reversedValue})
-      : initialValue = initialValue ?? 0,
+      {this.channel,
+      String? color,
+      String? labelText,
+      double? initialValue,
+      double? reversedValue})
+      : labelText = labelText ?? "",
+        initialValue = initialValue ?? 0,
         color = color ?? defaultColorHex,
         reversedValue = reversedValue ?? 1;
 
@@ -30,6 +36,7 @@ class ConsoleToggleSwitchWidgetProperty extends TypedConsoleWidgetProperty {
   ConsoleToggleSwitchWidgetProperty.fromUntyped(ConsoleWidgetProperty prop)
       : channel = selectAttributeAs(prop, "channel", null),
         color = selectAttributeAs(prop, "color", defaultColorHex),
+        labelText = selectAttributeAs(prop, "labelText", ""),
         initialValue = selectAttributeAs(prop, "initialValue", 0),
         reversedValue = selectAttributeAs(prop, "reversedValue", 1);
 
@@ -39,6 +46,7 @@ class ConsoleToggleSwitchWidgetProperty extends TypedConsoleWidgetProperty {
     return {
       "channel": channel,
       "color": color,
+      "labelText": labelText,
       "initialValue": initialValue,
       "reversedValue": reversedValue,
     };
@@ -61,6 +69,7 @@ class ConsoleToggleSwitchWidgetProperty extends TypedConsoleWidgetProperty {
     // Attributes of the property for editing.
     String? newChannel = initial.channel;
     String? newColor = initial.color;
+    String newLabelText = initial.labelText;
     double newInitialValue = initial.initialValue;
     double newReversedValue = initial.reversedValue;
 
@@ -106,6 +115,14 @@ class ConsoleToggleSwitchWidgetProperty extends TypedConsoleWidgetProperty {
                     return null;
                   }),
               const SizedBox(height: 12),
+              Text(AppLocale.display_section.getString(context),
+                  style: Theme.of(context).textTheme.headlineMedium),
+              TextFormField(
+                  initialValue: newLabelText,
+                  decoration: InputDecoration(
+                      labelText: AppLocale.title_field.getString(context)),
+                  onChanged: (value) => newLabelText = value),
+              const SizedBox(height: 12),
               Text(AppLocale.color.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               ColorSelector(
@@ -129,6 +146,7 @@ class ConsoleToggleSwitchWidgetProperty extends TypedConsoleWidgetProperty {
         propCompleter.complete(ConsoleToggleSwitchWidgetProperty(
           channel: newChannel,
           color: newColor,
+          labelText: newLabelText,
           initialValue: newInitialValue.toDouble(),
           reversedValue: newReversedValue.toDouble(),
         ));

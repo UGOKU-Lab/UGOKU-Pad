@@ -104,6 +104,15 @@ class _ConsoleValueMonitorWidgetState extends State<ConsoleValueMonitorWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final labelText = widget.property.labelText;
+    final hasLabel = labelText.trim().isNotEmpty;
+    final baseLabelStyle =
+        Theme.of(context).textTheme.titleSmall ?? const TextStyle();
+    final labelStyle = baseLabelStyle.copyWith(
+      color: Theme.of(context).colorScheme.onSurface,
+      fontSize: 24,
+    );
+
     return ConsoleWidgetCard(
       color: widget.property.color.toString(),
       activate: _pausing,
@@ -113,23 +122,34 @@ class _ConsoleValueMonitorWidgetState extends State<ConsoleValueMonitorWidget> {
             color: Theme.of(context).colorScheme.surface,
             alignment: Alignment.center,
             padding: const EdgeInsets.only(left: 10, right: 10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: constraints.maxHeight / 2,
-                  child: FittedBox(
-                    child: Text(
-                        _value?.toStringAsFixed(
+            child: SizedBox(
+              height: constraints.maxHeight / 2,
+              child: FittedBox(
+                child: Text(
+                    _value?.toStringAsFixed(
                             widget.property.displayFractionDigits) ??
-                            "-",
-                        style: TextStyle(
-                            color: hexToColor(widget.property.color.toString()))),
-                  ),
-                ),
-              ],
+                        "-",
+                    style: TextStyle(
+                        color:
+                            hexToColor(widget.property.color.toString()))),
+              ),
             ),
           ),
+          if (hasLabel)
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  labelText,
+                  style: labelStyle,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                ),
+              ),
+            ),
           GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTapDown: (_) => _setPausing(true),

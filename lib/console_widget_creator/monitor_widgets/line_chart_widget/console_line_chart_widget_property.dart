@@ -21,6 +21,8 @@ class ConsoleLineChartWidgetProperty implements TypedConsoleWidgetProperty {
 
   final String? color;
 
+  final String labelText;
+
   /// The min value of the area.
   final double minValue;
 
@@ -37,16 +39,19 @@ class ConsoleLineChartWidgetProperty implements TypedConsoleWidgetProperty {
   ConsoleLineChartWidgetProperty({
     this.channel,
     String? color,
+    String? labelText,
     this.minValue = 0,
     this.maxValue = 255,
     this.samples = 10,
     this.period = 100,
-  }) : color = color ?? defaultColorHex;
+  })  : labelText = labelText ?? "",
+        color = color ?? defaultColorHex;
 
   /// Creates a property from the untyped [property].
   ConsoleLineChartWidgetProperty.fromUntyped(ConsoleWidgetProperty property)
       : channel = selectAttributeAs(property, "channel", null),
         color = selectAttributeAs(property, "color", defaultColorHex),
+        labelText = selectAttributeAs(property, "labelText", ""),
         minValue = selectAttributeAs(property, "minValue", 0),
         maxValue = selectAttributeAs(property, "maxValue", 255),
         samples = selectAttributeAs(property, "samples", 10),
@@ -56,6 +61,7 @@ class ConsoleLineChartWidgetProperty implements TypedConsoleWidgetProperty {
   ConsoleWidgetProperty toUntyped() => {
     "channel": channel,
     "color": color,
+    "labelText": labelText,
     "minValue": minValue,
     "maxValue": maxValue,
     "samples": samples,
@@ -82,6 +88,7 @@ class ConsoleLineChartWidgetProperty implements TypedConsoleWidgetProperty {
     // Attributes of the property for editing.
     String? newChannel = initial.channel;
     String? newColor = initial.color;
+    String newLabelText = initial.labelText;
     double newMinValue = initial.minValue;
     double newMaxValue = initial.maxValue;
     int newSamples = initial.samples;
@@ -152,8 +159,17 @@ class ConsoleLineChartWidgetProperty implements TypedConsoleWidgetProperty {
                   minValue: 10,
                   nullable: false,
                   onValueChange: (value) => newPeriod = value!),
-                const SizedBox(height: 12),
-                Text(AppLocale.color.getString(context),
+              const SizedBox(height: 12),
+              Text(AppLocale.display_section.getString(context),
+                  style: Theme.of(context).textTheme.headlineMedium),
+              TextFormField(
+                initialValue: newLabelText,
+                decoration: InputDecoration(
+                    labelText: AppLocale.title_field.getString(context)),
+                onChanged: (value) => newLabelText = value,
+              ),
+              const SizedBox(height: 12),
+              Text(AppLocale.color.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
               ColorSelector(
                   initialValue: lastColor,
@@ -176,6 +192,7 @@ class ConsoleLineChartWidgetProperty implements TypedConsoleWidgetProperty {
         propCompleter.complete(ConsoleLineChartWidgetProperty(
           channel: newChannel,
           color: newColor,
+          labelText: newLabelText,
           minValue: newMinValue,
           maxValue: newMaxValue,
           samples: newSamples,

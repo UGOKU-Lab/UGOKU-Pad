@@ -19,19 +19,24 @@ class ConsoleValueMonitorProperty implements TypedConsoleWidgetProperty {
 
   final String? color;
 
+  final String labelText;
+
   final int displayFractionDigits;
 
   /// Creates a property.
   ConsoleValueMonitorProperty({
     this.channel,
     String? color,
+    String? labelText,
     this.displayFractionDigits = 0,
-  }) : color = color ?? defaultColorHex;
+  })  : labelText = labelText ?? "",
+        color = color ?? defaultColorHex;
 
   /// Creates a property from the untyped [property].
   ConsoleValueMonitorProperty.fromUntyped(ConsoleWidgetProperty property)
       : channel = selectAttributeAs(property, "channel", null),
         color = selectAttributeAs(property, "color", defaultColorHex),
+        labelText = selectAttributeAs(property, "labelText", ""),
         displayFractionDigits =
         selectAttributeAs(property, "displayFractionDigits", 0);
 
@@ -39,6 +44,7 @@ class ConsoleValueMonitorProperty implements TypedConsoleWidgetProperty {
   ConsoleWidgetProperty toUntyped() => {
     "channel": channel,
     "color": color,
+    "labelText": labelText,
     "displayFractionDigits": displayFractionDigits,
   };
 
@@ -62,6 +68,7 @@ class ConsoleValueMonitorProperty implements TypedConsoleWidgetProperty {
     // Attributes of the property for editing.
     String? newChannel = initial.channel;
     String? newColor = initial.color;
+    String newLabelText = initial.labelText;
     int newDisplayPrecision = initial.displayFractionDigits;
 
     if (newColor != null && newColor != defaultColorHex) {
@@ -86,6 +93,12 @@ class ConsoleValueMonitorProperty implements TypedConsoleWidgetProperty {
               const SizedBox(height: 12),
               Text(AppLocale.display_section.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
+              TextFormField(
+                initialValue: newLabelText,
+                decoration: InputDecoration(
+                    labelText: AppLocale.title_field.getString(context)),
+                onChanged: (value) => newLabelText = value,
+              ),
               IntInputField(
                 context: context,
                 labelText: AppLocale.fraction_digits.getString(context),
@@ -120,6 +133,7 @@ class ConsoleValueMonitorProperty implements TypedConsoleWidgetProperty {
         propCompleter.complete(ConsoleValueMonitorProperty(
           channel: newChannel,
           color: newColor,
+          labelText: newLabelText,
           displayFractionDigits: newDisplayPrecision,
         ));
       } else {

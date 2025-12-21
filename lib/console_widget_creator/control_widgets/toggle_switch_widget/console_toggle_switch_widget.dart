@@ -113,42 +113,83 @@ class _ConsoleToggleSwitchWidgetState extends State<ConsoleToggleSwitchWidget> {
 
   @override
   Widget build(BuildContext context) {
-        final paramError = widget.property.validate(context);
+    final paramError = widget.property.validate(context);
     if (paramError != null) {
       return ConsoleErrorWidgetCreator.createWith(
           brief: AppLocale.parameter_error.getString(context),
           detail: paramError);
     }
 
-    return LayoutBuilder(
-      builder: (context, constraints) => ConsoleWidgetCard(
-        color: widget.property.color.toString(),
-        activate: _activate,
-        child: GestureDetector(
-          onTapDown: (_) => setState(() => _activate = true),
-          onTapCancel: () => setState(() => _activate = false),
-          onTap: () {
-            setState(() {
-              _activate = false;
-              _toggleValue();
-            });
-          },
-          //onLongPress: () => {},
-          child: Container(
-            color: _value == widget.property.initialValue
-                ? Theme.of(context).colorScheme.surface
-                : hexToColor(widget.property.color.toString()),
-            child: Center(
-              child: _value == widget.property.initialValue
-                  ? Icon(Icons.toggle_off_outlined,
-                  size:
-                  min(constraints.maxHeight, constraints.maxWidth) / 2,
-                  color: widget.property.color != null ? hexToColor(widget.property.color.toString()) : hexToColor(defaultColorHex))
-                  : Icon(Icons.toggle_on_outlined,
-                  size:
-                  min(constraints.maxHeight, constraints.maxWidth) / 2,
-                  color: Theme.of(context).colorScheme.surface),
-            ),
+    final labelText = widget.property.labelText;
+    final hasLabel = labelText.trim().isNotEmpty;
+    final isOff = _value == widget.property.initialValue;
+    final backgroundColor = isOff
+        ? Theme.of(context).colorScheme.surface
+        : hexToColor(widget.property.color.toString());
+    final labelColor = isOff
+        ? Theme.of(context).colorScheme.onSurface
+        : Theme.of(context).colorScheme.surface;
+    final baseLabelStyle =
+        Theme.of(context).textTheme.titleSmall ?? const TextStyle();
+    final labelStyle = baseLabelStyle.copyWith(
+      color: labelColor,
+      fontSize: 24,
+    );
+
+    return ConsoleWidgetCard(
+      color: widget.property.color.toString(),
+      activate: _activate,
+      child: GestureDetector(
+        onTapDown: (_) => setState(() => _activate = true),
+        onTapCancel: () => setState(() => _activate = false),
+        onTap: () {
+          setState(() {
+            _activate = false;
+            _toggleValue();
+          });
+        },
+        //onLongPress: () => {},
+        child: Container(
+          color: backgroundColor,
+          child: Stack(
+            children: [
+              Center(
+                child: LayoutBuilder(
+                  builder: (context, constraints) => isOff
+                      ? Icon(
+                          Icons.toggle_off_outlined,
+                          size:
+                              min(constraints.maxHeight, constraints.maxWidth) /
+                                  2,
+                          color: widget.property.color != null
+                              ? hexToColor(widget.property.color.toString())
+                              : hexToColor(defaultColorHex),
+                        )
+                      : Icon(
+                          Icons.toggle_on_outlined,
+                          size:
+                              min(constraints.maxHeight, constraints.maxWidth) /
+                                  2,
+                          color: Theme.of(context).colorScheme.surface,
+                        ),
+                ),
+              ),
+              if (hasLabel)
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      labelText,
+                      style: labelStyle,
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
       ),

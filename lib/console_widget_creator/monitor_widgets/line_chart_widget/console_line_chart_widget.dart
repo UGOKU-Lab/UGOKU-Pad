@@ -158,6 +158,15 @@ class _ConsoleLineChartWidgetState extends State<ConsoleLineChartWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final labelText = widget.property.labelText;
+    final hasLabel = labelText.trim().isNotEmpty;
+    final baseLabelStyle =
+        Theme.of(context).textTheme.titleSmall ?? const TextStyle();
+    final labelStyle = baseLabelStyle.copyWith(
+      color: Theme.of(context).colorScheme.onSurface,
+      fontSize: 24,
+    );
+
     return ConsoleWidgetCard(
       color: widget.property.color.toString(),
       activate: _pausing,
@@ -172,6 +181,21 @@ class _ConsoleLineChartWidgetState extends State<ConsoleLineChartWidget> {
               ),
             ),
           ),
+          if (hasLabel)
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  labelText,
+                  style: labelStyle,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                ),
+              ),
+            ),
           GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTapDown: (_) => _setPausing(true),
