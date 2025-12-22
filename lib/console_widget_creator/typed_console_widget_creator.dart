@@ -75,5 +75,32 @@ class TypedConsoleWidgetCreator<T extends TypedConsoleWidgetProperty>
 /// Selects the [attribute] of the [property] as [T], or [defaultValue].
 T selectAttributeAs<T>(
     ConsoleWidgetProperty property, String attribute, T defaultValue) {
-  return property[attribute] is T ? property[attribute] : defaultValue;
+  final value = property[attribute];
+  if (value is T) {
+    return value;
+  }
+  if (value is num) {
+    if (0.0 is T) {
+      return value.toDouble() as T;
+    }
+    if (0 is T) {
+      if (value == value.roundToDouble()) {
+        return value.toInt() as T;
+      }
+    }
+  }
+  if (value is String) {
+    final parsed = num.tryParse(value);
+    if (parsed != null) {
+      if (0.0 is T) {
+        return parsed.toDouble() as T;
+      }
+      if (0 is T) {
+        if (parsed == parsed.roundToDouble()) {
+          return parsed.toInt() as T;
+        }
+      }
+    }
+  }
+  return defaultValue;
 }

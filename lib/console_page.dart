@@ -50,7 +50,7 @@ class _ConsolePageState extends State<ConsolePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool? hasAccepted = prefs.getBool('hasAcceptedPrivacyPolicy');
 
-    _consoleTitle ??= prefs.getString('recentlyUsedTitle');
+    _consoleTitle = prefs.getString('recentlyUsedTitle') ?? _consoleTitle;
 
     //await Future.delayed(const Duration(seconds: 1));
 
@@ -92,8 +92,12 @@ class _ConsolePageState extends State<ConsolePage> {
     isEditingConsole = true;
     isAddingConsole = false;
 
+    final prefs = await SharedPreferences.getInstance();
+    final previousTitle = _consoleTitle ??
+        prefs.getString('recentlyUsedTitle') ??
+        AppLocale.live_console.getString(context);
     final initialSave = ConsoleSaveObject(
-      _consoleTitle ?? AppLocale.live_console.getString(context),
+      previousTitle,
       _save.copy(),
     );
 
@@ -115,7 +119,31 @@ class _ConsolePageState extends State<ConsolePage> {
       _consoleTitle = result.title;
     });
 
-    final prefs = await SharedPreferences.getInstance();
+    final savedConsoles = prefs
+        .getStringList("consoles")
+        ?.map((json) => jsonDecode(json))
+        .whereType<Map<String, dynamic>>()
+        .map((map) => ConsoleSaveObject.fromJson(map))
+        .toList();
+    if (savedConsoles != null) {
+      var index =
+          savedConsoles.indexWhere((save) => save.title == previousTitle);
+      if (index == -1) {
+        index = savedConsoles.indexWhere((save) => save.title == result.title);
+      }
+      if (index == -1) {
+        savedConsoles.add(ConsoleSaveObject(result.title, result.parameter));
+      } else {
+        savedConsoles[index] = ConsoleSaveObject(
+          result.title,
+          result.parameter,
+        );
+      }
+      await prefs.setStringList(
+        "consoles",
+        savedConsoles.map((save) => jsonEncode(save.toJson())).toList(),
+      );
+    }
     await prefs.setString(
       'recentlyUsed',
       jsonEncode(result.parameter.toJson()),
