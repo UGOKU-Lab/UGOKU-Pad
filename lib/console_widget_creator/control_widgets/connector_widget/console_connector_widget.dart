@@ -50,6 +50,14 @@ class _ConsoleConnectorWidgetState extends State<ConsoleConnectorWidget> {
     });
   }
 
+  void _broadcastCurrentValue() {
+    if (!_on || _value == null || widget.property.channelDst == null) {
+      return;
+    }
+
+    widget.broadcaster?.sinkOn(widget.property.channelDst!)?.add(_value!);
+  }
+
   /// Sets the state [_value] to [value].
   void _setValue(double value) {
     setState(() {
@@ -73,7 +81,12 @@ class _ConsoleConnectorWidgetState extends State<ConsoleConnectorWidget> {
 
   @override
   void didUpdateWidget(covariant ConsoleConnectorWidget oldWidget) {
-    if (widget.broadcaster != oldWidget.broadcaster ||
+    final broadcasterChanged = widget.broadcaster != oldWidget.broadcaster;
+    if (broadcasterChanged) {
+      _broadcastCurrentValue();
+    }
+
+    if (broadcasterChanged ||
         widget.property.channelSrc != oldWidget.property.channelSrc) {
       _initBroadcastListening();
     }

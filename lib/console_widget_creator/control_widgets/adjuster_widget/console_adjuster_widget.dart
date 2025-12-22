@@ -117,6 +117,14 @@ class _ConsoleAdjusterWidgetState extends State<ConsoleAdjusterWidget> {
     });
   }
 
+  void _broadcastCurrentValue() {
+    if (widget.property.channel == null) {
+      return;
+    }
+
+    widget.broadcaster?.sinkOn(widget.property.channel!)?.add(_value);
+  }
+
   @override
   void initState() {
     _initState();
@@ -132,7 +140,12 @@ class _ConsoleAdjusterWidgetState extends State<ConsoleAdjusterWidget> {
       _initState();
     }
 
-    if (widget.broadcaster != oldWidget.broadcaster ||
+    final broadcasterChanged = widget.broadcaster != oldWidget.broadcaster;
+    if (broadcasterChanged) {
+      _broadcastCurrentValue();
+    }
+
+    if (broadcasterChanged ||
         widget.property.channel != oldWidget.property.channel) {
       _initBroadcastListening();
     }

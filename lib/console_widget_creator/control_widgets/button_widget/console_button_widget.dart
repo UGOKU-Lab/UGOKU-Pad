@@ -102,6 +102,16 @@ class _ConsoleButtonWidgetState extends State<ConsoleButtonWidget> {
         });
   }
 
+  void _broadcastCurrentValue() {
+    if (widget.property.channel == null) {
+      return;
+    }
+
+    widget.broadcaster
+        ?.sinkOn(widget.property.channel!)
+        ?.add(_value.toDouble());
+  }
+
   @override
   void initState() {
     // Initialize state.
@@ -119,7 +129,12 @@ class _ConsoleButtonWidgetState extends State<ConsoleButtonWidget> {
       _initState();
     }
 
-    if (widget.broadcaster != oldWidget.broadcaster ||
+    final broadcasterChanged = widget.broadcaster != oldWidget.broadcaster;
+    if (broadcasterChanged) {
+      _broadcastCurrentValue();
+    }
+
+    if (broadcasterChanged ||
         widget.property.channel != oldWidget.property.channel) {
       _initBroadcastListening();
     }

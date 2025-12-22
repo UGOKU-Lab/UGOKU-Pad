@@ -122,6 +122,18 @@ class _ConsoleSliderWidgetState extends State<ConsoleSliderWidget> {
         });
   }
 
+  void _broadcastCurrentValue() {
+    if (widget.property.channel == null) {
+      return;
+    }
+
+    final valueWidth = widget.property.valueWidth;
+    final minValue = widget.property.minValue;
+    final value = (valueWidth * _rate + minValue).floorToDouble();
+    widget.broadcaster?.sinkOn(widget.property.channel!)?.add(value);
+    _prevValue = value;
+  }
+
   @override
   void initState() {
     _initState();
@@ -137,7 +149,12 @@ class _ConsoleSliderWidgetState extends State<ConsoleSliderWidget> {
       _initState();
     }
 
-    if (widget.broadcaster != oldWidget.broadcaster ||
+    final broadcasterChanged = widget.broadcaster != oldWidget.broadcaster;
+    if (broadcasterChanged) {
+      _broadcastCurrentValue();
+    }
+
+    if (broadcasterChanged ||
         widget.property.channel != oldWidget.property.channel) {
       _initBroadcastListening();
     }

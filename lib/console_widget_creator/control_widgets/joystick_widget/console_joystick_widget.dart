@@ -145,6 +145,22 @@ class _ConsoleJoystickWidgetState extends State<ConsoleJoystickWidget> {
     }
   }
 
+  void _broadcastCurrentValue() {
+    if (_hasX) {
+      final valueX =
+          (_rateX * widget.property.valueWidthX + widget.property.minValueX)
+              .floorToDouble();
+      widget.broadcaster?.sinkOn(widget.property.channelX!)?.add(valueX);
+    }
+
+    if (_hasY) {
+      final valueY =
+          (_rateY * widget.property.valueWidthY + widget.property.minValueY)
+              .floorToDouble();
+      widget.broadcaster?.sinkOn(widget.property.channelY!)?.add(valueY);
+    }
+  }
+
   @override
   void initState() {
     _initState();
@@ -162,7 +178,12 @@ class _ConsoleJoystickWidgetState extends State<ConsoleJoystickWidget> {
     }
 
     // Add a lister for the broadcasting if required.
-    if (widget.broadcaster != oldWidget.broadcaster ||
+    final broadcasterChanged = widget.broadcaster != oldWidget.broadcaster;
+    if (broadcasterChanged) {
+      _broadcastCurrentValue();
+    }
+
+    if (broadcasterChanged ||
         widget.property.channelX != oldWidget.property.channelX ||
         widget.property.channelY != oldWidget.property.channelY) {
       _initBroadcastListening();
