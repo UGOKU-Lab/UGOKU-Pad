@@ -7,7 +7,6 @@ import '../../../bluetooth/constants.dart';
 import '../../../util/form/channel_selector.dart';
 import '../../../util/form/color_selector.dart';
 import '../../../util/form/common_form_page.dart';
-import '../../../util/form/double_field.dart';
 import '../../../util/form/integer_field.dart';
 import '../../console_widget_creator.dart';
 import '../../typed_console_widget_creator.dart';
@@ -103,14 +102,13 @@ class ConsoleAdjusterWidgetProperty implements TypedConsoleWidgetProperty {
     // Attributes of the property for editing.
     String? newChannel = initial.channel;
     String? newColor = initial.color;
-    double newMinValue = initial.minValue;
-    double newMaxValue = initial.maxValue;
-    int? newDivisions = initial.divisions == (newMaxValue - newMinValue).floor()
-        ? null
-        : initial.divisions;
-    double? newInitialValue =
-    initial.initialValue == newMinValue ? null : initial.initialValue;
-    int newDisplayFractionDigits = initial.displayFractionDigits;
+    int newMinValue = initial.minValue.toInt();
+    int newMaxValue = initial.maxValue.toInt();
+    int? newInitialValue = initial.initialValue.toInt();
+
+    if (newInitialValue == newMinValue) {
+      newInitialValue = null;
+    }
 
     if (newColor != null && newColor != defaultColorHex) {
       lastColor = newColor;
@@ -134,34 +132,48 @@ class ConsoleAdjusterWidgetProperty implements TypedConsoleWidgetProperty {
               const SizedBox(height: 12),
               Text(AppLocale.output_value.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
-              DoubleInputField(
+              IntInputField(
                   context: context,
                   labelText: AppLocale.min_value.getString(context),
                   initValue: newMinValue,
+                  minValue: 0,
+                  maxValue: 255,
                   nullable: false,
                   onValueChange: (value) => newMinValue = value!,
                   valueValidator: (value) {
-                    if (value! >= newMaxValue) {
-                      return AppLocale.validator_min_less_than_max;
+                    if (value == null) {
+                      return null;
+                    }
+                    if (value >= newMaxValue) {
+                      return AppLocale.validator_min_less_than_max
+                          .getString(context);
                     }
                     return null;
                   }),
-              DoubleInputField(
+              IntInputField(
                   context: context,
                   labelText: AppLocale.max_value.getString(context),
                   initValue: newMaxValue,
+                  minValue: 0,
+                  maxValue: 255,
                   nullable: false,
                   onValueChange: (value) => newMaxValue = value!,
                   valueValidator: (value) {
-                    if (value! <= newMinValue) {
-                      return AppLocale.validator_min_less_than_max;
+                    if (value == null) {
+                      return null;
+                    }
+                    if (value <= newMinValue) {
+                      return AppLocale.validator_min_less_than_max
+                          .getString(context);
                     }
                     return null;
                   }),
-              DoubleInputField(
+              IntInputField(
                   context: context,
                   labelText: AppLocale.initial_value.getString(context),
                   initValue: newInitialValue,
+                  minValue: 0,
+                  maxValue: 255,
                   onValueChange: (value) => newInitialValue = value,
                   valueValidator: (value) {
                     if (value == null) {
@@ -169,30 +181,10 @@ class ConsoleAdjusterWidgetProperty implements TypedConsoleWidgetProperty {
                     }
 
                     if (value < newMinValue || value > newMaxValue) {
-                      return AppLocale.validator_between;
+                      return AppLocale.validator_between.getString(context);
                     }
                     return null;
                   }),
-              IntInputField(
-                context: context,
-                labelText: AppLocale.divisions.getString(context),
-                initValue: newDivisions,
-                minValue: 1,
-                onValueChange: (value) => newDivisions = value,
-              ),
-              const SizedBox(height: 12),
-              Text(AppLocale.display_section.getString(context),
-                  style: Theme.of(context).textTheme.headlineMedium),
-              IntInputField(
-                context: context,
-                labelText: AppLocale.fraction_digits.getString(context),
-                initValue: newDisplayFractionDigits,
-                // Max and min are limited by [double.toStringAsFixed].
-                minValue: 0,
-                maxValue: 20,
-                nullable: false,
-                onValueChange: (value) => newDisplayFractionDigits = value!,
-              ),
               const SizedBox(height: 12),
               Text(AppLocale.color.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
@@ -217,11 +209,11 @@ class ConsoleAdjusterWidgetProperty implements TypedConsoleWidgetProperty {
         propCompleter.complete(ConsoleAdjusterWidgetProperty(
           channel: newChannel,
           color: newColor,
-          minValue: newMinValue,
-          maxValue: newMaxValue,
-          initialValue: newInitialValue,
-          divisions: newDivisions ?? (newMaxValue - newMinValue).floor(),
-          displayFractionDigits: newDisplayFractionDigits,
+          minValue: newMinValue.toDouble(),
+          maxValue: newMaxValue.toDouble(),
+          initialValue: newInitialValue?.toDouble(),
+          divisions: newMaxValue - newMinValue,
+          displayFractionDigits: 0,
         ));
       } else {
         propCompleter.complete(oldProperty);

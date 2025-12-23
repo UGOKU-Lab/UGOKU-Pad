@@ -7,7 +7,6 @@ import '../../../bluetooth/constants.dart';
 import '../../../util/form/channel_selector.dart';
 import '../../../util/form/color_selector.dart';
 import '../../../util/form/common_form_page.dart';
-import '../../../util/form/integer_field.dart';
 import '../../console_widget_creator.dart';
 import '../../typed_console_widget_creator.dart';
 import 'package:ugoku_console/util/AppLocale.dart';
@@ -69,7 +68,6 @@ class ConsoleValueMonitorProperty implements TypedConsoleWidgetProperty {
     String? newChannel = initial.channel;
     String? newColor = initial.color;
     String newLabelText = initial.labelText;
-    int newDisplayPrecision = initial.displayFractionDigits;
 
     if (newColor != null && newColor != defaultColorHex) {
       lastColor = newColor;
@@ -99,16 +97,6 @@ class ConsoleValueMonitorProperty implements TypedConsoleWidgetProperty {
                     labelText: AppLocale.title_field.getString(context)),
                 onChanged: (value) => newLabelText = value,
               ),
-              IntInputField(
-                context: context,
-                labelText: AppLocale.fraction_digits.getString(context),
-                initValue: newDisplayPrecision,
-                // Max and min are limited by [double.toStringAsFixed].
-                minValue: 0,
-                maxValue: 20,
-                nullable: false,
-                onValueChange: (value) => newDisplayPrecision = value!,
-              ),
               const SizedBox(height: 12),
               Text(AppLocale.color.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
@@ -134,7 +122,7 @@ class ConsoleValueMonitorProperty implements TypedConsoleWidgetProperty {
           channel: newChannel,
           color: newColor,
           labelText: newLabelText,
-          displayFractionDigits: newDisplayPrecision,
+          displayFractionDigits: 0,
         ));
       } else {
         propCompleter.complete(oldProperty);

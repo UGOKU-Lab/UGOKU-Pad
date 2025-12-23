@@ -7,7 +7,7 @@ import '../../../bluetooth/constants.dart';
 import '../../../util/form/channel_selector.dart';
 import '../../../util/form/color_selector.dart';
 import '../../../util/form/common_form_page.dart';
-import '../../../util/form/double_field.dart';
+import '../../../util/form/integer_field.dart';
 import '../../console_widget_creator.dart';
 import '../../typed_console_widget_creator.dart';
 import 'package:ugoku_console/util/AppLocale.dart';
@@ -105,10 +105,10 @@ class ConsoleJoystickWidgetProperty extends TypedConsoleWidgetProperty {
     String? newChannelX = initial.channelX;
     String? newChannelY = initial.channelY;
     String? newColor = initial.color;
-    double newMinValueX = initial.minValueX;
-    double newMaxValueX = initial.maxValueX;
-    double newMinValueY = initial.minValueY;
-    double newMaxValueY = initial.maxValueY;
+    int newMinValueX = initial.minValueX.toInt();
+    int newMaxValueX = initial.maxValueX.toInt();
+    int newMinValueY = initial.minValueY.toInt();
+    int newMaxValueY = initial.maxValueY.toInt();
 
     if (newColor != null && newColor != defaultColorHex) {
       lastColor = newColor;
@@ -137,54 +137,78 @@ class ConsoleJoystickWidgetProperty extends TypedConsoleWidgetProperty {
               const SizedBox(height: 12),
               Text(AppLocale.output_x.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
-              DoubleInputField(
+              IntInputField(
                   context: context,
                   labelText: AppLocale.min_value.getString(context),
                   initValue: newMinValueX,
                   nullable: false,
+                  minValue: 0,
+                  maxValue: 255,
                   onValueChange: (value) => newMinValueX = value!,
                   valueValidator: (value) {
-                    if (value! >= newMaxValueX) {
-                      return AppLocale.validator_min_less_than_max;
+                    if (value == null) {
+                      return null;
+                    }
+                    if (value >= newMaxValueX) {
+                      return AppLocale.validator_min_less_than_max
+                          .getString(context);
                     }
                     return null;
                   }),
-              DoubleInputField(
+              IntInputField(
                   context: context,
                   labelText: AppLocale.max_value.getString(context),
                   initValue: newMaxValueX,
                   nullable: false,
+                  minValue: 0,
+                  maxValue: 255,
                   onValueChange: (value) => newMaxValueX = value!,
                   valueValidator: (value) {
-                    if (value! <= newMinValueX) {
-                      return AppLocale.validator_min_less_than_max;
+                    if (value == null) {
+                      return null;
+                    }
+                    if (value <= newMinValueX) {
+                      return AppLocale.validator_min_less_than_max
+                          .getString(context);
                     }
                     return null;
                   }),
               const SizedBox(height: 12),
               Text(AppLocale.output_y.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
-              DoubleInputField(
+              IntInputField(
                   context: context,
                   labelText: AppLocale.min_value.getString(context),
                   initValue: newMinValueY,
                   nullable: false,
+                  minValue: 0,
+                  maxValue: 255,
                   onValueChange: (value) => newMinValueY = value!,
                   valueValidator: (value) {
-                    if (value! >= newMaxValueY) {
-                      return AppLocale.validator_min_less_than_max;
+                    if (value == null) {
+                      return null;
+                    }
+                    if (value >= newMaxValueY) {
+                      return AppLocale.validator_min_less_than_max
+                          .getString(context);
                     }
                     return null;
                   }),
-              DoubleInputField(
+              IntInputField(
                   context: context,
                   labelText: AppLocale.max_value.getString(context),
                   initValue: newMaxValueY,
                   nullable: false,
+                  minValue: 0,
+                  maxValue: 255,
                   onValueChange: (value) => newMaxValueY = value!,
                   valueValidator: (value) {
-                    if (value! <= newMinValueY) {
-                      return AppLocale.validator_min_less_than_max;
+                    if (value == null) {
+                      return null;
+                    }
+                    if (value <= newMinValueY) {
+                      return AppLocale.validator_min_less_than_max
+                          .getString(context);
                     }
                     return null;
                   }),

@@ -7,7 +7,6 @@ import '../../../bluetooth/constants.dart';
 import '../../../util/form/channel_selector.dart';
 import '../../../util/form/color_selector.dart';
 import '../../../util/form/common_form_page.dart';
-import '../../../util/form/double_field.dart';
 import '../../../util/form/integer_field.dart';
 import '../../console_widget_creator.dart';
 import '../../typed_console_widget_creator.dart';
@@ -89,8 +88,8 @@ class ConsoleLineChartWidgetProperty implements TypedConsoleWidgetProperty {
     String? newChannel = initial.channel;
     String? newColor = initial.color;
     String newLabelText = initial.labelText;
-    double newMinValue = initial.minValue;
-    double newMaxValue = initial.maxValue;
+    int newMinValue = initial.minValue.toInt();
+    int newMaxValue = initial.maxValue.toInt();
     int newSamples = initial.samples;
     int newPeriod = initial.period;
 
@@ -116,27 +115,39 @@ class ConsoleLineChartWidgetProperty implements TypedConsoleWidgetProperty {
               const SizedBox(height: 12),
               Text(AppLocale.input_value.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
-              DoubleInputField(
+              IntInputField(
                   context: context,
                   labelText: AppLocale.min_value.getString(context),
                   initValue: newMinValue,
                   nullable: false,
+                  minValue: 0,
+                  maxValue: 255,
                   onValueChange: (value) => newMinValue = value!,
                   valueValidator: (value) {
-                    if (value! == newMaxValue) {
-                      return "Min must be different from max.";
+                    if (value == null) {
+                      return null;
+                    }
+                    if (value == newMaxValue) {
+                      return AppLocale.validator_min_max_difference
+                          .getString(context);
                     }
                     return null;
                   }),
-              DoubleInputField(
+              IntInputField(
                   context: context,
                   labelText: AppLocale.max_value.getString(context),
                   initValue: newMaxValue,
                   nullable: false,
+                  minValue: 0,
+                  maxValue: 255,
                   onValueChange: (value) => newMaxValue = value!,
                   valueValidator: (value) {
-                    if (value! == newMinValue) {
-                      return "Max must be different from min.";
+                    if (value == null) {
+                      return null;
+                    }
+                    if (value == newMinValue) {
+                      return AppLocale.validator_min_max_difference
+                          .getString(context);
                     }
                     return null;
                   }),
@@ -193,8 +204,8 @@ class ConsoleLineChartWidgetProperty implements TypedConsoleWidgetProperty {
           channel: newChannel,
           color: newColor,
           labelText: newLabelText,
-          minValue: newMinValue,
-          maxValue: newMaxValue,
+          minValue: newMinValue.toDouble(),
+          maxValue: newMaxValue.toDouble(),
           samples: newSamples,
           period: newPeriod,
         ));

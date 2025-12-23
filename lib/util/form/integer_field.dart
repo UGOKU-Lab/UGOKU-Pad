@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:ugoku_console/util/AppLocale.dart';
 
@@ -36,6 +37,7 @@ class IntInputField extends TextFormField {
             : null,
         hintText: hintText),
     keyboardType: TextInputType.number,
+    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
     onChanged: (value) {
       final intValue = int.tryParse(value);
 

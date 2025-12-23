@@ -7,7 +7,7 @@ import '../../../bluetooth/constants.dart';
 import '../../../util/form/channel_selector.dart';
 import '../../../util/form/color_selector.dart';
 import '../../../util/form/common_form_page.dart';
-import '../../../util/form/double_field.dart';
+import '../../../util/form/integer_field.dart';
 import '../../console_widget_creator.dart';
 import '../../typed_console_widget_creator.dart';
 import 'package:ugoku_console/util/AppLocale.dart';
@@ -84,10 +84,13 @@ class ConsoleSliderWidgetProperty extends TypedConsoleWidgetProperty {
     // Attributes of the parameter for editing.
     String? newChannel = initial.channel;
     String? newColor = initial.color;
-    double newMinValue = initial.minValue;
-    double newMaxValue = initial.maxValue;
-    double? newInitialValue =
-    initial.initialValue == newMinValue ? null : initial.initialValue;
+    int newMinValue = initial.minValue.toInt();
+    int newMaxValue = initial.maxValue.toInt();
+    int? newInitialValue = initial.initialValue.toInt();
+
+    if (newInitialValue == newMinValue) {
+      newInitialValue = null;
+    }
 
     if (newColor != null && newColor != defaultColorHex) {
       lastColor = newColor;
@@ -111,34 +114,48 @@ class ConsoleSliderWidgetProperty extends TypedConsoleWidgetProperty {
               const SizedBox(height: 12),
               Text(AppLocale.output_value.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
-              DoubleInputField(
+              IntInputField(
                   context: context,
                   labelText: AppLocale.min_value.getString(context),
                   initValue: newMinValue,
                   nullable: false,
+                  minValue: 0,
+                  maxValue: 255,
                   onValueChange: (value) => newMinValue = value!,
                   valueValidator: (value) {
-                    if (value! >= newMaxValue) {
-                      return AppLocale.validator_min_less_than_max;
+                    if (value == null) {
+                      return null;
+                    }
+                    if (value >= newMaxValue) {
+                      return AppLocale.validator_min_less_than_max
+                          .getString(context);
                     }
                     return null;
                   }),
-              DoubleInputField(
+              IntInputField(
                   context: context,
                   labelText: AppLocale.max_value.getString(context),
                   initValue: newMaxValue,
                   nullable: false,
+                  minValue: 0,
+                  maxValue: 255,
                   onValueChange: (value) => newMaxValue = value!,
                   valueValidator: (value) {
-                    if (value! <= newMinValue) {
-                      return AppLocale.validator_min_less_than_max;
+                    if (value == null) {
+                      return null;
+                    }
+                    if (value <= newMinValue) {
+                      return AppLocale.validator_min_less_than_max
+                          .getString(context);
                     }
                     return null;
                   }),
-              DoubleInputField(
+              IntInputField(
                   context: context,
                   labelText: AppLocale.initial_value.getString(context),
                   initValue: newInitialValue,
+                  minValue: 0,
+                  maxValue: 255,
                   onValueChange: (value) => newInitialValue = value,
                   valueValidator: (value) {
                     if (value == null) {
@@ -146,7 +163,7 @@ class ConsoleSliderWidgetProperty extends TypedConsoleWidgetProperty {
                     }
 
                     if (value < newMinValue || value > newMaxValue) {
-                      return AppLocale.validator_between;
+                      return AppLocale.validator_between.getString(context);
                     }
                     return null;
                   }),
@@ -175,9 +192,9 @@ class ConsoleSliderWidgetProperty extends TypedConsoleWidgetProperty {
         propCompleter.complete(ConsoleSliderWidgetProperty(
           channel: newChannel,
           color: newColor,
-          minValue: newMinValue,
-          maxValue: newMaxValue,
-          initialValue: newInitialValue,
+          minValue: newMinValue.toDouble(),
+          maxValue: newMaxValue.toDouble(),
+          initialValue: newInitialValue?.toDouble(),
         ));
       } else {
         propCompleter.complete(oldProperty);

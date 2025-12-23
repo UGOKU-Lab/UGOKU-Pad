@@ -7,7 +7,7 @@ import '../../../bluetooth/constants.dart';
 import '../../../util/form/channel_selector.dart';
 import '../../../util/form/color_selector.dart';
 import '../../../util/form/common_form_page.dart';
-import '../../../util/form/double_field.dart';
+import '../../../util/form/integer_field.dart';
 import '../../console_widget_creator.dart';
 import '../../typed_console_widget_creator.dart';
 import 'package:ugoku_console/util/AppLocale.dart';
@@ -70,8 +70,8 @@ class ConsoleToggleSwitchWidgetProperty extends TypedConsoleWidgetProperty {
     String? newChannel = initial.channel;
     String? newColor = initial.color;
     String newLabelText = initial.labelText;
-    double newInitialValue = initial.initialValue;
-    double newReversedValue = initial.reversedValue;
+    int newInitialValue = initial.initialValue.toInt();
+    int newReversedValue = initial.reversedValue.toInt();
 
     if (newColor != null && newColor != defaultColorHex) {
       lastColor = newColor;
@@ -95,22 +95,30 @@ class ConsoleToggleSwitchWidgetProperty extends TypedConsoleWidgetProperty {
               const SizedBox(height: 12),
               Text(AppLocale.output_value.getString(context),
                   style: Theme.of(context).textTheme.headlineMedium),
-              DoubleInputField(
+              IntInputField(
                   context: context,
                   labelText: AppLocale.initial_value.getString(context),
                   initValue: newInitialValue,
                   nullable: false,
+                  minValue: 0,
+                  maxValue: 255,
                   onValueChange: (value) => newInitialValue = value!,
                   valueValidator: (value) => null),
-              DoubleInputField(
+              IntInputField(
                   context: context,
                   labelText: AppLocale.reversed_value.getString(context),
                   initValue: newReversedValue,
                   nullable: false,
+                  minValue: 0,
+                  maxValue: 255,
                   onValueChange: (value) => newReversedValue = value!,
                   valueValidator: (value) {
-                    if (value! == newInitialValue) {
-                      return AppLocale.validator_values_must_differ;
+                    if (value == null) {
+                      return null;
+                    }
+                    if (value == newInitialValue) {
+                      return AppLocale.validator_values_must_differ
+                          .getString(context);
                     }
                     return null;
                   }),
