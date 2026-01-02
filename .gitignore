@@ -60,3 +60,4 @@ secrets/*.json
 secret/*.json
 
 .github/copilot-instructions.md
+.vscode/settings.json
