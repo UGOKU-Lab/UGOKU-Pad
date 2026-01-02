@@ -272,29 +272,4 @@ class _ValueOnChannel {
 
   /// Creates a [value] on the [channel].
   _ValueOnChannel(this.channel, this.value);
-
-  /// Parses a list of bytes to a [_ValueOnChannel].
-  ///
-  /// Returns null if the given list is an invalid sequence.
-  static _ValueOnChannel? fromIntList(List<int> list) {
-    if (list.length < 3) {
-      return null;
-    }
-
-    final channel = list[0];
-    final value = list[1];
-    final checksum = list[2];
-
-    if (channel ^ value != checksum) {
-      return null;
-    }
-
-    return _ValueOnChannel(channel, value);
-  }
-
-  /// Converts to a byte list.
-  Uint8List toUint8List() {
-    final checksum = channel ^ value;
-    return Uint8List.fromList([channel, value, checksum]);
-  }
 }
