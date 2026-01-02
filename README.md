@@ -4,7 +4,7 @@
 [UGOKU Pad](https://ugoku-lab.github.io/ugokupad.html)は、ESP32などのマイコンをBluetoothでスマートフォンと接続し、簡単に操作できるアプリです。  
 ジョイスティックやスライダー、ボタンなど、色々なウィジェットを組み合わせて、自分だけの操作パネルを作成できます。  
 モーターの操作やセンサーデータをモニタリングなど、様々な用途で活用できます。  
-[UGOKU-One Arduino Sample](https://github.com/UGOKU-Lab/UGOKU-One_Arduino_sample_for_UGOKU-Pad)も公開しているので、気軽にお試しいただけます。
+[UGOKU-Pad Arduino Library](https://github.com/UGOKU-Lab/UGOKU-Pad_Arduino) を使用することで、ESP32などのマイコンで簡単に通信プログラムを記述できます。Arduino IDEのライブラリマネージャーから "UGOKU-Pad" を検索してインストールすることも可能です。
 
 [<img src="https://github.com/user-attachments/assets/73952bbe-7f89-46e9-9a6e-cdc7eea8e7c8" alt="Get it on Google Play" height="60">](https://play.google.com/store/apps/details?id=com.ugoku_lab.ugoku_console)　[<img src="https://github.com/user-attachments/assets/e27e5d09-63d0-4a2e-9e14-0bb05dabd487" alt="Get it on Google Play" height="60">](https://apps.apple.com/jp/app/ugoku-pad/id6739496098)
 
