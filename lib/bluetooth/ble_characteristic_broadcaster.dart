@@ -136,9 +136,10 @@ class BleStateBroadcaster implements MultiChannelBroadcaster {
           packetData.add(kv.value);         // 1 byte for value
         }
 
-        // If < 9 pairs, pad the remainder with zeros so packetData length = 18
+        // If < 9 pairs, pad the remainder with 0xFF (unused marker) so packetData length = 18
+        // 0xFF is reserved as "unused" marker per protocol specification
         while (packetData.length < 18) {
-          packetData.add(0);
+          packetData.add(0xFF);
         }
 
         // Compute XOR over the first 18 bytes
