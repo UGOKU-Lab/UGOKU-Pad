@@ -139,7 +139,7 @@ class StartupWidget extends StatelessWidget {
         ConsoleSaveObject(
           'Sample: UGOKU-One',
           ConsolePanelParameter(
-            rows: 7,
+            rows: 8,
             columns: 4,
             cells: [
               ConsolePanelCellParameter(
@@ -159,19 +159,17 @@ class StartupWidget extends StatelessWidget {
               ConsolePanelCellParameter(
                   row: 1, column: 3, creator: 'Toggle Switch', property: {"channel": "13"}),
               ConsolePanelCellParameter(
-                  row: 2, column: 0, width=2, creator: 'Headline Text', property: {"text": "サーボ"}),
-              ConsolePanelCellParameter(
-                  row: 2, column: 2, width=2, creator: 'Headline Text', property: {"text": "モータ"}),
+                  row: 2, column: 0, width=4, creator: 'Headline Text', property: {"text": "サーボ"}),
               ConsolePanelCellParameter(
                   row: 3, column: 0, width=2, height=2, creator: 'Adjuster', property: {"channel": "14", "maxValue": 180.0}),
               ConsolePanelCellParameter(
-                  row: 3, column: 2, height=2, creator: 'Slider', property: {"channel": "17", "initialValue": 127}),
+                  row: 3, column: 2, width=2, height=2,  creator: 'Adjuster', property: {"channel": "27", "maxValue": 180.0}),
               ConsolePanelCellParameter(
-                  row: 3, column: 3, height=2, creator: 'Slider', property: {"channel": "19", "initialValue": 127}),
+                  row: 5, column: 0, width=4, creator: 'Headline Text', property: {"text": "モータ"}),
               ConsolePanelCellParameter(
-                  row: 5, column: 0, width=2, height=2,  creator: 'Adjuster', property: {"channel": "27", "maxValue": 180.0}),
+                  row: 6, column: 0, width=2, height=2, creator: 'Joystick', property: {"channelY": "17"}),
               ConsolePanelCellParameter(
-                  row: 5, column: 2, width=2, height=2, creator: 'Joystick', property: {"channelX": "17", "channelY": "19"}),
+                  row: 6, column: 2, width=2, height=2, creator: 'Joystick', property: {"channelY": "19"}),
             ],
           ),
         ),
