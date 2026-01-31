@@ -136,6 +136,43 @@ class StartupWidget extends StatelessWidget {
             ],
           ),
         ),
+        ConsoleSaveObject(
+          'Sample: UGOKU-One',
+          ConsolePanelParameter(
+            rows: 7,
+            columns: 4,
+            cells: [
+              ConsolePanelCellParameter(
+                  row: 0, column: 0, creator: 'Headline Text', property: {"text": "IMU"}),
+              ConsolePanelCellParameter(
+                  row: 0, column: 1, creator: 'Value Monitor', property: {"channel": "100"}),
+              ConsolePanelCellParameter(
+                  row: 0, column: 2, creator: 'Value Monitor', property: {"channel": "101"}),
+              ConsolePanelCellParameter(
+                  row: 0, column: 3, creator: 'Value Monitor', property: {"channel": "102"}),
+              ConsolePanelCellParameter(
+                  row: 1, column: 0, creator: 'Headline Text', property: {"text": "LED"}),
+              ConsolePanelCellParameter(
+                  row: 1, column: 1, creator: 'Value Monitor', property: {"channel": "2"}),
+              ConsolePanelCellParameter(
+                  row: 1, column: 2, creator: 'Value Monitor', property: {"channel": "4"}),
+              ConsolePanelCellParameter(
+                  row: 1, column: 3, creator: 'Value Monitor', property: {"channel": "13"}),
+              ConsolePanelCellParameter(
+                  row: 2, column: 0, width=2, creator: 'Headline Text', property: {"text": "サーボ"}),
+              ConsolePanelCellParameter(
+                  row: 2, column: 2, width=2, creator: 'Headline Text', property: {"text": "モータ"}),
+              ConsolePanelCellParameter(
+                  row: 3, column: 0, width=2, height=2, creator: 'Adjuster', property: {"channel": "14", "maxValue": 180.0}),
+              ConsolePanelCellParameter(
+                  row: 3, column: 2, height=2, creator: 'Slider', property: {"channel": "17"}),
+              ConsolePanelCellParameter(
+                  row: 5, column: 0, width=2, height=2,  creator: 'Adjuster', property: {"channel": "27", "maxValue": 180.0}),
+              ConsolePanelCellParameter(
+                  row: 5, column: 2, width=2, height=2, creator: 'Joystick', property: {"channelX": "17", "channelY": "19"}),
+            ],
+          ),
+        ),
       ];
 
       /*
