@@ -165,7 +165,9 @@ class StartupWidget extends StatelessWidget {
               ConsolePanelCellParameter(
                   row: 3, column: 0, width=2, height=2, creator: 'Adjuster', property: {"channel": "14", "maxValue": 180.0}),
               ConsolePanelCellParameter(
-                  row: 3, column: 2, height=2, creator: 'Slider', property: {"channel": "17"}),
+                  row: 3, column: 2, height=2, creator: 'Slider', property: {"channel": "17", "initialValue": 127}),
+              ConsolePanelCellParameter(
+                  row: 3, column: 3, height=2, creator: 'Slider', property: {"channel": "19", "initialValue": 127}),
               ConsolePanelCellParameter(
                   row: 5, column: 0, width=2, height=2,  creator: 'Adjuster', property: {"channel": "27", "maxValue": 180.0}),
               ConsolePanelCellParameter(
