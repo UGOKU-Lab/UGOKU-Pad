@@ -153,11 +153,11 @@ class StartupWidget extends StatelessWidget {
               ConsolePanelCellParameter(
                   row: 1, column: 0, creator: 'Headline Text', property: {"text": "LED"}),
               ConsolePanelCellParameter(
-                  row: 1, column: 1, creator: 'Value Monitor', property: {"channel": "2"}),
+                  row: 1, column: 1, creator: 'Toggle Switch', property: {"channel": "2"}),
               ConsolePanelCellParameter(
-                  row: 1, column: 2, creator: 'Value Monitor', property: {"channel": "4"}),
+                  row: 1, column: 2, creator: 'Toggle Switch', property: {"channel": "4"}),
               ConsolePanelCellParameter(
-                  row: 1, column: 3, creator: 'Value Monitor', property: {"channel": "13"}),
+                  row: 1, column: 3, creator: 'Toggle Switch', property: {"channel": "13"}),
               ConsolePanelCellParameter(
                   row: 2, column: 0, width=2, creator: 'Headline Text', property: {"text": "サーボ"}),
               ConsolePanelCellParameter(
