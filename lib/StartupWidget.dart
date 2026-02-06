@@ -55,8 +55,8 @@ class StartupWidget extends StatelessWidget {
                     '- Control of the devices using BLE\n'
                     '\n'
                     '$versionName Update:\n'
-                    '- You can now directly switch between the usage screen and the editing screen of the Console.\n'
-                    '- You can now add title text to the Toggle Switch, Value Monitor, and Line Chart widgets.\n',
+                    '- Bug fix: Fixed a bug where ch0 could not be used in BLE communication.\n'
+                    '- Improvement: Added a feature to collect usage data for app improvement by using Firebase Analytics provided by Google LLC (the collected data does not include information that can identify individuals and is used only for app improvement).',
                   'body_ja':
                     'UGOKU Pad $versionNameへようこそ。\n'
                     'このアプリではESP32などのマイコンにBluetooth接続し、自分で作成したコンソールでモータの操作やセンサ値の表示など様々なことを行うことができます。\n'
@@ -69,11 +69,67 @@ class StartupWidget extends StatelessWidget {
                     '- BLEを使用したデバイスのコントロール\n'
                     '\n'
                     '$versionName 更新内容：\n'
-                    '- Consoleの使用画面と編集画面を直接遷移できるようにしました。\n'
-                    '- トグルスイッチ、数値モニター、ラインチャートのウィジェットにタイトルテキストを追加できるようになりました。\n'
+                    '- BLE通信でch0が使用できないバグを修正しました。\n'
+                    '- アプリの機能改善に役立てるため、Googleが提供するFirebase Analyticsを使用して利用状況を収集する機能を追加しました(収集されたデータは個人を特定できる情報を含まず、アプリの機能改善のみに使用されます。)。\n'
 
                 },
               ),
+            ],
+          ),
+        ),
+        ConsoleSaveObject(
+          'Sample: ESP32 Arduino Sample',
+          ConsolePanelParameter(
+            rows: 3,
+            columns: 2,
+            cells: [
+              ConsolePanelCellParameter(
+                  row: 0, column: 0, creator: 'Adjuster', property: {"channel": "3", "maxValue": 180.0}),
+              ConsolePanelCellParameter(
+                  row: 0, column: 1, creator: 'Toggle Switch', property: {"channel": "1"}),
+              ConsolePanelCellParameter(
+                  row: 1, column: 0, creator: 'Value Monitor', property: {"channel": "5"}),
+              ConsolePanelCellParameter(
+                  row: 1, column: 1, creator: 'Joystick', property: {"channelY": "2", "maxValueX": 180.0, "maxValueY": 180.0}),
+              ConsolePanelCellParameter(
+                  row: 2, column: 0, width: 2, creator: 'Line Chart', property: {"channel": "5", "maxValue": 50.0}),
+            ],
+          ),
+        ),
+        ConsoleSaveObject(
+          'Sample: UGOKU-One',
+          ConsolePanelParameter(
+            rows: 8,
+            columns: 4,
+            cells: [
+              ConsolePanelCellParameter(
+                  row: 0, column: 0, creator: 'Headline Text', property: {"text": "IMU"}),
+              ConsolePanelCellParameter(
+                  row: 0, column: 1, creator: 'Value Monitor', property: {"channel": "100"}),
+              ConsolePanelCellParameter(
+                  row: 0, column: 2, creator: 'Value Monitor', property: {"channel": "101"}),
+              ConsolePanelCellParameter(
+                  row: 0, column: 3, creator: 'Value Monitor', property: {"channel": "102"}),
+              ConsolePanelCellParameter(
+                  row: 1, column: 0, creator: 'Headline Text', property: {"text": "LED"}),
+              ConsolePanelCellParameter(
+                  row: 1, column: 1, creator: 'Toggle Switch', property: {"channel": "2"}),
+              ConsolePanelCellParameter(
+                  row: 1, column: 2, creator: 'Toggle Switch', property: {"channel": "4"}),
+              ConsolePanelCellParameter(
+                  row: 1, column: 3, creator: 'Toggle Switch', property: {"channel": "13"}),
+              ConsolePanelCellParameter(
+                  row: 2, column: 0, width: 4, creator: 'Headline Text', property: {"text": "サーボ"}),
+              ConsolePanelCellParameter(
+                  row: 3, column: 0, width: 2, height: 2, creator: 'Adjuster', property: {"channel": "14", "maxValue": 180.0}),
+              ConsolePanelCellParameter(
+                  row: 3, column: 2, width: 2, height: 2,  creator: 'Adjuster', property: {"channel": "27", "maxValue": 180.0}),
+              ConsolePanelCellParameter(
+                  row: 5, column: 0, width: 4, creator: 'Headline Text', property: {"text": "モータ"}),
+              ConsolePanelCellParameter(
+                  row: 6, column: 0, width: 2, height: 2, creator: 'Joystick', property: {"channelY": "17"}),
+              ConsolePanelCellParameter(
+                  row: 6, column: 2, width: 2, height: 2, creator: 'Joystick', property: {"channelY": "19"}),
             ],
           ),
         ),
