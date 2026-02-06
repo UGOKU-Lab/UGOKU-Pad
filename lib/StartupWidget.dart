@@ -165,7 +165,9 @@ class StartupWidget extends StatelessWidget {
               ConsolePanelCellParameter(
                   row: 3, column: 2, width=2, height=2,  creator: 'Adjuster', property: {"channel": "27", "maxValue": 180.0}),
               ConsolePanelCellParameter(
-                  row: 5, column: 0, width=4, creator: 'Headline Text', property: {"text": "モータ"}),
+                  row: 5, column: 0, width=2, creator: 'Headline Text', property: {"text": "モータ"}),
+              ConsolePanelCellParameter(
+                  row: 5, column: 2, width=2, creator: 'Button', property: {"channel": "23", "buttonText": "PWR OUT"}),
               ConsolePanelCellParameter(
                   row: 6, column: 0, width=2, height=2, creator: 'Joystick', property: {"channelY": "17"}),
               ConsolePanelCellParameter(
