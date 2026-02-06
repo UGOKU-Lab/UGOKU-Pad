@@ -56,6 +56,7 @@ class StartupWidget extends StatelessWidget {
                     '\n'
                     '$versionName Update:\n'
                     '- Bug fix: Fixed a bug where ch0 could not be used in BLE communication.\n'
+                    '- Sample: Added a sample console for UGOKU One.\n'
                     '- Improvement: Added a feature to collect usage data for app improvement by using Firebase Analytics provided by Google LLC (the collected data does not include information that can identify individuals and is used only for app improvement).',
                   'body_ja':
                     'UGOKU Pad $versionNameへようこそ。\n'
@@ -70,6 +71,7 @@ class StartupWidget extends StatelessWidget {
                     '\n'
                     '$versionName 更新内容：\n'
                     '- BLE通信でch0が使用できないバグを修正しました。\n'
+                    '- UGOKU One用のサンプルコンソールを追加しました。\n'
                     '- アプリの機能改善に役立てるため、Googleが提供するFirebase Analyticsを使用して利用状況を収集する機能を追加しました(収集されたデータは個人を特定できる情報を含まず、アプリの機能改善のみに使用されます。)。\n'
 
                 },
@@ -97,7 +99,7 @@ class StartupWidget extends StatelessWidget {
           ),
         ),
         ConsoleSaveObject(
-          'Sample: UGOKU-One',
+          'Sample: UGOKU One',
           ConsolePanelParameter(
             rows: 8,
             columns: 4,
@@ -121,17 +123,17 @@ class StartupWidget extends StatelessWidget {
               ConsolePanelCellParameter(
                   row: 2, column: 0, width: 4, creator: 'Headline Text', property: {"text": "サーボ"}),
               ConsolePanelCellParameter(
-                  row: 3, column: 0, width: 2, height: 2, creator: 'Adjuster', property: {"channel": "14", "maxValue": 180.0}),
+                  row: 3, column: 0, width: 2, height: 2, creator: 'Adjuster', property: {"channel": "27", "maxValue": 180.0, "initialValue": 90.0}),
               ConsolePanelCellParameter(
-                  row: 3, column: 2, width: 2, height: 2,  creator: 'Adjuster', property: {"channel": "27", "maxValue": 180.0}),
+                  row: 3, column: 2, width: 2, height: 2,  creator: 'Adjuster', property: {"channel": "14", "maxValue": 180.0, "initialValue": 90.0}),
               ConsolePanelCellParameter(
                   row: 5, column: 0, width: 2, creator: 'Headline Text', property: {"text": "モータ"}),
               ConsolePanelCellParameter(
                   row: 5, column: 2, width: 2, creator: 'Button', property: {"channel": "23", "buttonText": "PWR OUT"}),
               ConsolePanelCellParameter(
-                  row: 6, column: 0, width: 2, height: 2, creator: 'Joystick', property: {"channelY": "17"}),
+                  row: 6, column: 0, width: 2, height: 2, creator: 'Joystick', property: {"channelY": "19"}),
               ConsolePanelCellParameter(
-                  row: 6, column: 2, width: 2, height: 2, creator: 'Joystick', property: {"channelY": "19"}),
+                  row: 6, column: 2, width: 2, height: 2, creator: 'Joystick', property: {"channelY": "17"}),
             ],
           ),
         ),
