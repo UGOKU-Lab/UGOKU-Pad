@@ -7,11 +7,4 @@
 3. Use of Location Information
    The App uses location information solely for Bluetooth pairing purposes. The location information is used exclusively for this purpose and is neither stored nor transmitted. A message requesting the user's permission will be displayed when location information is used.
 
-4. Collection of App Usage Information
-   This App automatically collects the following information using Firebase Analytics provided by Google LLC for the purpose of improving the App and understanding usage patterns:
-   - App usage information (number of sessions, screen transitions, etc.)
-   - Device information (OS version, device model, etc.)
-   - Crash reports
-
-   This data is processed through Firebase Analytics services and is managed in accordance with Google's Privacy Policy. The collected data does not contain personally identifiable information and is used solely for improving App functionality.
 
