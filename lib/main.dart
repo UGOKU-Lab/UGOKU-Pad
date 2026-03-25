@@ -10,7 +10,11 @@ import 'StartupWidget.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    debugPrint('Firebase initialization failed: $e');
+  }
   _registerLicenses();
   runApp(const ProviderScope(child: MyApp()));
 }

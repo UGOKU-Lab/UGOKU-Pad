@@ -233,7 +233,11 @@ class StartupWidget extends StatelessWidget {
           }
         }
 
-        return Container();
+        return const Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
       },
     );
   }
