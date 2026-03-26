@@ -96,7 +96,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return MaterialApp(
       title: "UGOKU Pad",
       theme: ThemeData(
-        //colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         colorScheme: ColorScheme.fromSeed(
           primary: const Color(0xFF673AB7),
           seedColor: Colors.deepPurple,

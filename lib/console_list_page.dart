@@ -205,7 +205,7 @@ class _ConsoleListPageState extends State<ConsoleListPage> {
           ),
         ),
       ),
-      onPopInvoked: (final didPop) async {
+      onPopInvokedWithResult: (final didPop, result) async {
         // Save current parameters.
         await SharedPreferences.getInstance().then((pref) {
           pref.setStringList("consoles",

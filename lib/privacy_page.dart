@@ -15,7 +15,8 @@ class _PrivacyPageState extends State<PrivacyPage> {
   Future<void> acceptPrivacyPolicy() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('hasAcceptedPrivacyPolicy', true);
-    Navigator.of(context).pop(true); // Closes the dialog with a result of true
+    if (!mounted) return;
+    Navigator.of(context).pop(true);
   }
 
   Future<String> loadPrivacyPolicy() async {
@@ -54,11 +55,6 @@ class _PrivacyPageState extends State<PrivacyPage> {
         },
       ),
       actions: [
-        /*
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(false), // Dismiss without accepting
-          child: Text(AppLocale.privacy_close.getString(context), style: const TextStyle(fontSize: 16.0)),
-        ),*/
         TextButton(
           onPressed: acceptPrivacyPolicy, // Accept and close
           child: Text(AppLocale.privacy_agree.getString(context), style: const TextStyle(fontSize: 16.0)),

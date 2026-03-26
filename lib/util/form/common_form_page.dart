@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:ugoku_console/util/AppLocale.dart';
@@ -45,8 +43,35 @@ class CommonFormPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
 
+        final navigator = Navigator.of(context);
+        showDialog(
+          context: context,
+          builder: (dialogContext) => AlertDialog(
+            title: Text(AppLocale.warning.getString(dialogContext)),
+            content: Text(AppLocale.discard_changes.getString(dialogContext)),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop();
+                },
+                child: Text(AppLocale.cancel.getString(dialogContext)),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop();
+                  navigator.pop(false);
+                },
+                child: Text(AppLocale.yes.getString(dialogContext)),
+              ),
+            ],
+          ),
+        );
+      },
       child: Scaffold(
         appBar: AppBar(
           title: Text(title),
@@ -71,44 +96,6 @@ class CommonFormPage extends StatelessWidget {
           ),
         ),
       ),
-      onWillPop: () async {
-
-        final shouldPop = Completer<bool>();
-
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text(AppLocale.warning.getString(context)),
-            content: Text(AppLocale.discard_changes.getString(context)),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  shouldPop.complete(false);
-                },
-                child: Text(AppLocale.cancel.getString(context)),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  shouldPop.complete(true);
-                },
-                child: Text(AppLocale.yes.getString(context)),
-              ),
-            ],
-          ),
-        );
-
-        return shouldPop.future.then((shouldPop) {
-          // Return the result before pop this form.
-          if (shouldPop) {
-            Navigator.of(context).pop(false);
-          }
-
-          // Always false because of that required pop is done above.
-          return Future.value(false);
-        });
-      },
     );
   }
 }

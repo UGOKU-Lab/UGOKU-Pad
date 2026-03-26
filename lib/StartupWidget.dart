@@ -17,8 +17,6 @@ class StartupWidget extends StatelessWidget {
     final buildNumber   = packageInfo.buildNumber;
     final version    = '$versionName+$buildNumber';
 
-    print("Version: $version");
-
     final savedVersion = instance.getString('version');
 
     final savedConsoles = instance
@@ -178,14 +176,6 @@ class StartupWidget extends StatelessWidget {
           ),
         ),
       ];
-
-      /*
-      for (final newConsole in newlyCreatedWidgets) {
-        while (savedConsoles.any((c) => c.title == newConsole.title)) {
-          newConsole.title = '${newConsole.title}_';
-        }
-      }
-      */
 
       for (final newConsole in newlyCreatedWidgets) {
         if (newConsole.title.startsWith("Release Notes:")) {

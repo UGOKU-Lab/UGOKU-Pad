@@ -38,44 +38,20 @@ class _ConsoleSliderWidgetState extends State<ConsoleSliderWidget> {
 
   /// Sets the delta value and adds the value to the sink.
   void _setRateDelta(double rateDelta, {bool broadcast = true}) {
-    // Debug: Log the incoming rateDelta and broadcast flag
-    //print('Incoming rateDelta: $rateDelta, broadcast: $broadcast');
-
-    // Update _rateDelta using the clamped value
     setState(() {
       _rateDelta = rateDelta.clamp(-_rateOffset, 1 - _rateOffset);
-      // Debug: Log the updated _rateDelta value
-      //print('Updated _rateDelta (clamped): $_rateDelta');
     });
 
-    // Calculate the value based on the current _rate and property attributes
     final valueWidth = widget.property.valueWidth;
     final minValue = widget.property.minValue;
     final value = (valueWidth * _rate + minValue).floorToDouble();
-
-    // Debug: Log the calculated value, valueWidth, and minValue
-    //print('valueWidth: $valueWidth, minValue: $minValue');
-    print('Calculated value: $value');
-
-    // Debug: Log each part of the condition before broadcasting
-    print('Broadcast flag: $broadcast');
-    print('Channel: ${widget.property.channel}');
-    print('Previous value: $_prevValue');
-    print('New value: $value');
-
-    // TODO fix channel
     // Broadcast if conditions are met
     if (broadcast && widget.property.channel != null && _prevValue != value) {
-      // Debug: Log broadcasting information
-      print('Broadcasting to channel: ${widget.property.channel}');
       widget.broadcaster?.sinkOn(widget.property.channel!)?.add(value);
     }
 
     // Update _prevValue
     _prevValue = value;
-
-    // Debug: Log the updated _prevValue
-    print('Updated _prevValue: $_prevValue');
   }
 
   /// Sets the offset value.

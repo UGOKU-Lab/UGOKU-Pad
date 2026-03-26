@@ -67,7 +67,47 @@ class _ConsoleEditPageState extends State<ConsoleEditPage> {
     final Color headerForeground =
         isDarkTheme ? Colors.white : Colors.black87;
 
-    return WillPopScope(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+
+        final shouldPop = Completer<bool>();
+
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(AppLocale.warning.getString(context)),
+            content: Text(AppLocale.discard_changes.getString(context)),
+            actions: [
+              TextButton(
+                child: Text(AppLocale.cancel.getString(context)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  shouldPop.complete(false);
+                },
+              ),
+              TextButton(
+                child: Text(AppLocale.yes.getString(context)),
+                onPressed: () {
+                  lastColor = defaultColorHex;
+                  isEditingConsole = false;
+                  isAddingConsole = false;
+
+                  Navigator.of(context).pop();
+                  shouldPop.complete(true);
+                },
+              )
+            ],
+          ),
+        );
+
+        shouldPop.future.then((shouldPop) {
+          if (shouldPop) {
+            Navigator.of(this.context).pop(null);
+          }
+        });
+      },
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: headerColor,
@@ -101,8 +141,6 @@ class _ConsoleEditPageState extends State<ConsoleEditPage> {
 
                   isEditingConsole = false;
                   isAddingConsole = false;
-
-                  print('SAVE: ${_save.toJson()}');
 
                   Navigator.of(context).pop(_save);
                 },
@@ -192,44 +230,6 @@ class _ConsoleEditPageState extends State<ConsoleEditPage> {
           ),
         ),
       ),
-      onWillPop: () async {
-
-        // Cancellation action.
-        final shouldPop = Completer<bool>();
-
-        // Show the warning dialog, then pop null by the answer.
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text(AppLocale.warning.getString(context)),
-            content: Text(AppLocale.discard_changes.getString(context)),
-            actions: [
-              TextButton(
-                child: Text(AppLocale.cancel.getString(context)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  shouldPop.complete(false);
-                },
-              ),
-              TextButton(
-                child: Text(AppLocale.yes.getString(context)),
-                onPressed: () {
-                  // Reset lastColor
-                  lastColor = defaultColorHex;
-
-                  isEditingConsole = false;
-                  isAddingConsole = false;
-
-                  Navigator.of(context).pop();
-                  shouldPop.complete(true);
-                },
-              )
-            ],
-          ),
-        );
-
-        return shouldPop.future;
-      },
     );
   }
 
