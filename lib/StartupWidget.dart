@@ -53,9 +53,8 @@ class StartupWidget extends StatelessWidget {
                     '- Control of the devices using BLE\n'
                     '\n'
                     '$versionName Update:\n'
-                    '- Bug fix: Fixed a bug where ch0 could not be used in BLE communication.\n'
-                    '- Sample: Added a sample console for UGOKU One.\n'
-                    '- Improvement: Added a feature to collect usage data for app improvement by using Firebase Analytics provided by Google LLC (the collected data does not include information that can identify individuals and is used only for app improvement).',
+                    '- Maintenance: Updated internal libraries to the latest versions.'
+                    '- Improvement: Added a feature to collect usage data using Firebase Analytics provided by Google to the IOS version as well to help improve the app\'s features (the collected data does not include personally identifiable information and is only used for improving the app\'s features).',
                   'body_ja':
                     'UGOKU Pad $versionNameへようこそ。\n'
                     'このアプリではESP32などのマイコンにBluetooth接続し、自分で作成したコンソールでモータの操作やセンサ値の表示など様々なことを行うことができます。\n'
@@ -68,9 +67,8 @@ class StartupWidget extends StatelessWidget {
                     '- BLEを使用したデバイスのコントロール\n'
                     '\n'
                     '$versionName 更新内容：\n'
-                    '- BLE通信でch0が使用できないバグを修正しました。\n'
-                    '- UGOKU One用のサンプルコンソールを追加しました。\n'
-                    '- アプリの機能改善に役立てるため、Googleが提供するFirebase Analyticsを使用して利用状況を収集する機能を追加しました(収集されたデータは個人を特定できる情報を含まず、アプリの機能改善のみに使用されます。)。\n'
+                    '- メンテナンス: 内部ライブラリを最新バージョンに更新しました。\n'
+                    '- アプリの機能改善に役立てるため、Googleが提供するFirebase Analyticsを使用して利用状況を収集する機能をIOS版にも追加しました(収集されたデータは個人を特定できる情報を含まず、アプリの機能改善のみに使用されます。)。\n'
 
                 },
               ),
