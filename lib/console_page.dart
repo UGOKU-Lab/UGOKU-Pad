@@ -37,8 +37,6 @@ class _ConsolePageState extends State<ConsolePage> {
   /// The latest target device to connect.
   BluetoothDevice? latestTargetDevice;
 
-  get child => null;
-
   @override
   void initState() {
     super.initState();
@@ -52,23 +50,7 @@ class _ConsolePageState extends State<ConsolePage> {
 
     _consoleTitle = prefs.getString('recentlyUsedTitle') ?? _consoleTitle;
 
-    //await Future.delayed(const Duration(seconds: 1));
-
-    // Show PrivacyPage if the user hasn't accepted yet
-    /*
-    if (hasAccepted != true) {
-      PackageInfo.fromPlatform().then(
-            (packageInfo) => Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => Theme(
-            data: Theme.of(context).copyWith(
-                appBarTheme: const AppBarTheme(centerTitle: true)),
-            child: const PrivacyPage(
-            ),
-          ),
-        )),
-      );
-    }
-    */
+    if (!mounted) return;
 
     if (hasAccepted != true) {
       PackageInfo.fromPlatform().then(
@@ -289,18 +271,21 @@ class _ConsolePageState extends State<ConsolePage> {
 
                 // Show the license page.
                 PackageInfo.fromPlatform().then(
-                      (packageInfo) => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Theme(
-                      data: Theme.of(context).copyWith(
-                          appBarTheme: const AppBarTheme(centerTitle: true)),
-                      child: LicensePage(
-                        applicationName: packageInfo.appName,
-                        applicationVersion: packageInfo.version,
-                        applicationLegalese:
-                            AppLocale.license_legalese.getString(context),
+                      (packageInfo) {
+                    if (!mounted) return;
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => Theme(
+                        data: Theme.of(context).copyWith(
+                            appBarTheme: const AppBarTheme(centerTitle: true)),
+                        child: LicensePage(
+                          applicationName: packageInfo.appName,
+                          applicationVersion: packageInfo.version,
+                          applicationLegalese:
+                              AppLocale.license_legalese.getString(context),
+                        ),
                       ),
-                    ),
-                  )),
+                    ));
+                  },
                 );
               },
             ),
@@ -310,21 +295,6 @@ class _ConsolePageState extends State<ConsolePage> {
               onTap: () {
                 // Pop the drawer.
                 Navigator.of(context).pop();
-
-                // Show the license page.
-                /*
-                PackageInfo.fromPlatform().then(
-                      (packageInfo) => Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Theme(
-                      data: Theme.of(context).copyWith(
-                          appBarTheme: const AppBarTheme(centerTitle: true)),
-                      child: const PrivacyPage(
-
-                      ),
-                    ),
-                  )),
-                );
-                */
 
                 PackageInfo.fromPlatform().then(
                       (packageInfo) => showDialog(

@@ -1,5 +1,5 @@
-# Target iOS 13+ explicitly to satisfy the current App Store SDK requirements
-platform :ios, '13.0'
+# Target iOS 15+ explicitly to satisfy Firebase SDK 12.x requirements
+platform :ios, '15.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'

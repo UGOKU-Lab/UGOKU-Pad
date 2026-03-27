@@ -32,21 +32,6 @@ class _ConsoleButtonWidgetState extends State<ConsoleButtonWidget> {
 
   StreamSubscription? _subscription;
 
-  /// Sets the delta value and adds the value to the sink.
-  void _toggleValue() {
-    setState(() {
-      _value = _value == widget.property.initialValue
-          ? widget.property.tappedValue
-          : widget.property.initialValue;
-    });
-
-    if (widget.property.channel != null) {
-      widget.broadcaster
-          ?.sinkOn(widget.property.channel!)
-          ?.add(_value.toDouble());
-    }
-  }
-
   void _setValue(bool isOn) {
     setState(() {
       if (isOn) {

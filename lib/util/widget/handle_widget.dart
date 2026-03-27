@@ -36,21 +36,16 @@ class _HandleWidgetState extends State<HandleWidget> {
       onTapDown: (_) => widget.onActivationChange?.call(true),
       onTapUp: (_) => widget.onActivationChange?.call(false),
       onPanStart: (details) {
-        //print("handle_widget: onPanStart");
         _originX = details.localPosition.dx;
         _originY = details.localPosition.dy;
         widget.onActivationChange?.call(true);
       },
       onPanUpdate: (details) {
-        //print("handle_widget: onPanUpdate");
         final dx = details.localPosition.dx - _originX;
         final dy = details.localPosition.dy - _originY;
         widget.onValueChange?.call(dx, dy);
       },
       onPanEnd: (details) {
-        //print("handle_widget: onPanEnd");
-        // Reset values when the pan ends
-        //widget.onValueChange?.call(0, 0);
         widget.onValueFix?.call();
         widget.onActivationChange?.call(false);
 
@@ -61,8 +56,7 @@ class _HandleWidgetState extends State<HandleWidget> {
         widget.onActivationChange?.call(false);
 
         _originX = _originY = 0;  // reset
-      }
-      //onLongPress: () => widget.onActivationChange?.call(false),
+      },
     );
   }
 }

@@ -12,17 +12,10 @@ final bleStateChannelProvider = Provider<Iterable<BleStateChannel>>((ref) {
 
 /// Provides a broadcaster.
 final bleStateBroadcasterProvider = Provider<BleStateBroadcaster>((ref) {
-  final services = ref.watch(servicesProvider);
+  ref.watch(servicesProvider);
   final channels = ref.watch(bleStateChannelProvider).toList();
 
-  // Log the channels
-  print('bleStateChannelProvider Channels: $channels');
-
-  final device = ref.watch(connectionTargetDeviceProvider);
-  print('bleStateChannelProvider Device: $device');
-
   final characteristic = ref.watch(targetCharacteristicProvider);
-  print('bleStateChannelProvider characteristic: $characteristic');
 
   // Dispose the previous broadcaster
   _broadcaster?.dispose();

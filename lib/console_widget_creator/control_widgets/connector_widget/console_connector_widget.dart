@@ -65,13 +65,6 @@ class _ConsoleConnectorWidgetState extends State<ConsoleConnectorWidget> {
     });
   }
 
-  /// Sets the state [_activate] to [activated].
-  void _setActivate(bool activated) {
-    setState(() {
-      _activate = activated;
-    });
-  }
-
   @override
   void initState() {
     super.initState();

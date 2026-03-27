@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:collection';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 import '../util/broadcaster/multi_channel_broadcaster.dart';
@@ -69,14 +69,12 @@ class BleStateBroadcaster implements MultiChannelBroadcaster {
 
   Future<void> _setNotifications() async {
     await characteristic?.setNotifyValue(true);
-    print('setNotifyValue(true) succeeded');
 
     // Listen to notifications
     _notificationSubscription =
         characteristic!.onValueReceived.listen(
             _distribute, onError: (error) {
-          // Handle error
-          print('Notification error: $error');
+          debugPrint('Notification error: $error');
         });
   }
 
@@ -101,7 +99,6 @@ class BleStateBroadcaster implements MultiChannelBroadcaster {
       }
       if (computedXor != chunk[18]) {
         // Bad checksum: drop this packet entirely
-        print('Bad checksum on incoming 19-byte packet.');
         continue;
       }
 
@@ -136,9 +133,10 @@ class BleStateBroadcaster implements MultiChannelBroadcaster {
           packetData.add(kv.value);         // 1 byte for value
         }
 
-        // If < 9 pairs, pad the remainder with zeros so packetData length = 18
+        // If < 9 pairs, pad the remainder with 0xFF (unused marker) so packetData length = 18
+        // 0xFF is reserved as "unused" marker per protocol specification
         while (packetData.length < 18) {
-          packetData.add(0);
+          packetData.add(0xFF);
         }
 
         // Compute XOR over the first 18 bytes
@@ -163,7 +161,7 @@ class BleStateBroadcaster implements MultiChannelBroadcaster {
       // Clear everything once we’ve sent
       _sendDataMap.clear();
     } catch (e) {
-      print('Error in _periodicSend: $e');
+      debugPrint('Error in _periodicSend: $e');
     }
   }
 
@@ -272,25 +270,6 @@ class _ValueOnChannel {
 
   /// Creates a [value] on the [channel].
   _ValueOnChannel(this.channel, this.value);
-
-  /// Parses a list of bytes to a [_ValueOnChannel].
-  ///
-  /// Returns null if the given list is an invalid sequence.
-  static _ValueOnChannel? fromIntList(List<int> list) {
-    if (list.length < 3) {
-      return null;
-    }
-
-    final channel = list[0];
-    final value = list[1];
-    final checksum = list[2];
-
-    if (channel ^ value != checksum) {
-      return null;
-    }
-
-    return _ValueOnChannel(channel, value);
-  }
 
   /// Converts to a byte list.
   Uint8List toUint8List() {

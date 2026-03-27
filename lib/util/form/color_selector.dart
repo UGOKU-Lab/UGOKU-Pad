@@ -42,7 +42,6 @@ class ColorSelector extends ConsumerWidget {
                   ColorPickerType.wheel: true // Enable color wheel
                 },
               ),
-              //const SizedBox(height: 20),
               Text(
                 'Selected Color: ${selectedColor.hex}',
                 style: TextStyle(

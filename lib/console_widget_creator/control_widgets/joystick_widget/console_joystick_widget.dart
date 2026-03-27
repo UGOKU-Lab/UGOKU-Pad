@@ -35,8 +35,6 @@ class _ConsoleJoystickWidgetState extends State<ConsoleJoystickWidget> {
   bool get _hasX => widget.property.channelX != null;
   bool get _hasY => widget.property.channelY != null;
 
-  //double? _prevValueX;
-  //double? _prevValueY;
   StreamSubscription? _subscriptionX;
   StreamSubscription? _subscriptionY;
 
@@ -58,28 +56,15 @@ class _ConsoleJoystickWidgetState extends State<ConsoleJoystickWidget> {
     (_rateY * widget.property.valueWidthY + widget.property.minValueY)
         .floorToDouble();
 
-    //print("_setRate: valueX: " + valueX.toString() + " valueY: " + valueY.toString());
-
     if (broadcast) {
-      if (widget.property.channelX != null /* && _prevValueX != valueX*/) {
+      if (widget.property.channelX != null) {
         widget.broadcaster?.sinkOn(widget.property.channelX!)?.add(valueX);
-
-        //print("broadcast: valueX: " + valueX.toString());
-      } else {
-        //print("broadcast2: valueX: " + valueX.toString());
       }
 
-      if (widget.property.channelY != null /* && _prevValueY != valueY*/) {
+      if (widget.property.channelY != null) {
         widget.broadcaster?.sinkOn(widget.property.channelY!)?.add(valueY);
-
-        //print("broadcast: valueY: " + valueY.toString());
-      } else {
-        //print("broadcast2: valueY: " + valueY.toString());
       }
     }
-
-    //_prevValueX = valueX;
-    //_prevValueY = valueY;
   }
 
   void _initState() {
@@ -250,14 +235,9 @@ class _ConsoleJoystickWidgetState extends State<ConsoleJoystickWidget> {
                     _hasY ? -dy / constraints.maxHeight + 0.5 : 0.5,
                   ),
                   onValueFix: () {
-                    //print("handle_widget: onValueFix1");
                     _setRate(0.5, 0.5);
 
-                    Timer(const Duration(milliseconds: 50), () { //100
-                      //print("handle_widget: onValueFix2");
-                      //_prevValueX = -1;
-                      //_prevValueY = -1;
-
+                    Timer(const Duration(milliseconds: 50), () {
                       _setRate(0.5, 0.5);
                     });
                   },
