@@ -21,8 +21,8 @@ class ConsoleErrorWidgetCreator extends ConsoleWidgetCreator {
     propertyCreator: (context, {oldProperty}) =>
         Future.value(oldProperty ?? {"brief": brief, "detail": detail}),
     builder: (context, property) => _ConsoleErrorWidget({
-      "brief": property["brief"] ?? brief,
-      "detail": property["detail"] ?? detail,
+      "brief": property["brief"] ?? AppLocale.widget_name_error.getString(context),
+      "detail": property["detail"] ?? AppLocale.error_occurred.getString(context),
     }),
   );
 
