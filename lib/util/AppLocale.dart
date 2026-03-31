@@ -114,6 +114,10 @@ mixin AppLocale {
   static const String validator_samples_range = 'validator_samples_range';
   static const String validator_min_max_difference = 'validator_min_max_difference';
   static const String edit_mode = 'edit_mode';
+  static const String release_notes = 'release_notes';
+  static const String release_notes_file = 'release_notes_file';
+  static const String release_notes_dismiss = 'release_notes_dismiss';
+  static const String release_notes_load_failed = 'release_notes_load_failed';
 
   static const Map<String, dynamic> EN = {
     privacy: 'Terms of App & Privacy Policy',
@@ -236,6 +240,10 @@ mixin AppLocale {
     validator_samples_range: 'Number of samplings must be between 2 and 100.',
     validator_min_max_difference: 'Max and min must be different.',
     edit_mode: 'Editing mode',
+    release_notes: 'About UGOKU Pad',
+    release_notes_file: 'assets/release_notes/release_notes_en.md',
+    release_notes_dismiss: 'OK',
+    release_notes_load_failed: 'Failed to load release notes.',
   };
 
   static const Map<String, dynamic> JA = {
@@ -355,5 +363,9 @@ mixin AppLocale {
     validator_samples_range: 'サンプリング数は2〜100の範囲で指定してください',
     validator_min_max_difference: '最大値と最小値は異なる必要があります',
     edit_mode: '編集モード',
+    release_notes: 'UGOKU Padについて',
+    release_notes_file: 'assets/release_notes/release_notes_ja.md',
+    release_notes_dismiss: 'OK',
+    release_notes_load_failed: 'リリースノートの読み込みに失敗しました',
   };
 }

@@ -7,6 +7,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ugoku_console/privacy_page.dart';
+import 'package:ugoku_console/release_notes_page.dart';
 import 'package:ugoku_console/util/AppLocale.dart';
 
 import 'bluetooth/device_connection_page.dart';
@@ -53,21 +54,48 @@ class _ConsolePageState extends State<ConsolePage> {
     if (!mounted) return;
 
     if (hasAccepted != true) {
-      PackageInfo.fromPlatform().then(
-            (packageInfo) => showDialog(
-          context: context,
-          barrierDismissible: false,  // Prevents dismissal by tapping outside the dialog
-          builder: (BuildContext context) {
-            return Theme(
-              data: Theme.of(context).copyWith(
-                appBarTheme: const AppBarTheme(centerTitle: true),
-              ),
-              child: const PrivacyPage(),
-            );
-          },
-        ),
+      await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Theme(
+            data: Theme.of(context).copyWith(
+              appBarTheme: const AppBarTheme(centerTitle: true),
+            ),
+            child: const PrivacyPage(),
+          );
+        },
       );
     }
+
+    if (!mounted) return;
+    await _checkReleaseNotes();
+  }
+
+  Future<void> _checkReleaseNotes() async {
+    final prefs = await SharedPreferences.getInstance();
+    final currentVersion = prefs.getString('version') ?? '';
+    final seenVersion = prefs.getString('release_notes_seen_version') ?? '';
+
+    if (currentVersion.isEmpty || currentVersion == seenVersion) return;
+    if (!mounted) return;
+
+    _showReleaseNotesDialog();
+  }
+
+  void _showReleaseNotesDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            appBarTheme: const AppBarTheme(centerTitle: true),
+          ),
+          child: const ReleaseNotesPage(),
+        );
+      },
+    );
   }
 
   Future<void> _openConsoleEditor() async {
@@ -310,6 +338,14 @@ class _ConsolePageState extends State<ConsolePage> {
                     },
                   ),
                 );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.info_outline),
+              title: Text(AppLocale.release_notes.getString(context)),
+              onTap: () {
+                Navigator.of(context).pop();
+                _showReleaseNotesDialog();
               },
             ),
           ],

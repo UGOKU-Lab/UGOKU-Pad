@@ -28,53 +28,7 @@ class StartupWidget extends StatelessWidget {
     if (savedVersion != version) {
       instance.setString('version', version);
 
-      final newlyCreatedWidgets = [
-        ConsoleSaveObject(
-          'Release Notes: $versionName',
-          ConsolePanelParameter(
-            rows: 1,
-            columns: 1,
-            cells: [
-              ConsolePanelCellParameter(
-                row: 0,
-                column: 0,
-                creator: 'Note',
-                property: {
-                  'title': 'Release Notes: $versionName',
-                  'body':
-                    'Welcome to the $versionName of the UGOKU Pad.\n'
-                    'With this app, you can connect to a microcontroller such as ESP32 via Bluetooth and do various things such as operating the motor and displaying sensor values with a console created by yourself.\n'
-                    '\n'
-                    '[url=https://ugoku-lab.github.io/ugokupad.html]How to use[/url]\n'
-                    '\n'
-                    'This offers the following key features:\n'
-                    '- Console creation\n'
-                    '- Connection to your Bluetooth devices\n'
-                    '- Control of the devices using BLE\n'
-                    '\n'
-                    '$versionName Update:\n'
-                    '- Maintenance: Updated internal libraries to the latest versions.'
-                    '- Improvement: Added a feature to collect usage data using Firebase Analytics provided by Google to the IOS version as well to help improve the app\'s features (the collected data does not include personally identifiable information and is only used for improving the app\'s features).',
-                  'body_ja':
-                    'UGOKU Pad $versionNameへようこそ。\n'
-                    'このアプリではESP32などのマイコンにBluetooth接続し、自分で作成したコンソールでモータの操作やセンサ値の表示など様々なことを行うことができます。\n'
-                    '\n'
-                    '使い方は[url=https://ugoku-lab.github.io/ugokupad.html]こちら[/url]\n'
-                    '\n'
-                    '主な機能：\n'
-                    '- コンソールの作成\n'
-                    '- Bluetoothデバイスへの接続\n'
-                    '- BLEを使用したデバイスのコントロール\n'
-                    '\n'
-                    '$versionName 更新内容：\n'
-                    '- メンテナンス: 内部ライブラリを最新バージョンに更新しました。\n'
-                    '- アプリの機能改善に役立てるため、Googleが提供するFirebase Analyticsを使用して利用状況を収集する機能をIOS版にも追加しました(収集されたデータは個人を特定できる情報を含まず、アプリの機能改善のみに使用されます。)。\n'
-
-                },
-              ),
-            ],
-          ),
-        ),
+      final sampleConsoles = [
         ConsoleSaveObject(
           'Sample: ESP32 Arduino Sample',
           ConsolePanelParameter(
@@ -175,15 +129,9 @@ class StartupWidget extends StatelessWidget {
         ),
       ];
 
-      for (final newConsole in newlyCreatedWidgets) {
-        if (newConsole.title.startsWith("Release Notes:")) {
-          // Remove any existing console that starts with "Release Notes:"
-          savedConsoles.removeWhere((c) => c.title.startsWith("Release Notes:"));
-          // Add the new "Release Notes:" console
-          savedConsoles.add(newConsole);
-        } else if (!savedConsoles.any((c) => c.title == newConsole.title)) {
-          // If the title doesn't exist, add the console
-          savedConsoles.add(newConsole);
+      for (final sample in sampleConsoles) {
+        if (!savedConsoles.any((c) => c.title == sample.title)) {
+          savedConsoles.add(sample);
         }
       }
 
@@ -194,12 +142,16 @@ class StartupWidget extends StatelessWidget {
     // Return the recently used console.
     final recentlyUsed = instance.getString('recentlyUsed');
 
-    return recentlyUsed != null
-        ? ConsolePanelParameter.fromJson(jsonDecode(recentlyUsed))
-        : savedConsoles
-        .where((c) => c.title == 'Release Notes: $versionName')
-        .first
-        .parameter;
+    if (recentlyUsed != null) {
+      return ConsolePanelParameter.fromJson(jsonDecode(recentlyUsed));
+    }
+
+    if (savedConsoles.isNotEmpty) {
+      return savedConsoles.first.parameter;
+    }
+
+    return ConsolePanelParameter.fromError(
+        "No Console", "Please create a console from the menu.");
   });
 
   StartupWidget({super.key});
