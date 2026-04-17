@@ -27,7 +27,8 @@ final connectionTargetDeviceProvider = Provider<BluetoothDevice?>((ref) {
   return _connectionTargetDevice;
 });
 
-final servicesProvider = FutureProvider<List<BluetoothService>>((ref) async {
+final servicesProvider = FutureProvider<List<BluetoothService>>(
+  (ref) async {
   final device = ref.watch(connectionTargetDeviceProvider);
   var services = <BluetoothService>[];
 
@@ -48,7 +49,7 @@ final servicesProvider = FutureProvider<List<BluetoothService>>((ref) async {
       if (event == BluetoothConnectionState.disconnected) {
         // Unselect the target if disconnected
         if (ref.read(targetDeviceProvider) == device) {
-          ref.read(targetDeviceProvider.notifier).state = null;
+          ref.read(targetDeviceProvider.notifier).set(null);
         }
       }
     });
@@ -81,7 +82,7 @@ final servicesProvider = FutureProvider<List<BluetoothService>>((ref) async {
 
   } catch (error) {
     // Unselect the target device if an error occurs
-    ref.read(targetDeviceProvider.notifier).state = null;
+    ref.read(targetDeviceProvider.notifier).set(null);
   } finally {
     // Set negotiating flag to false
     _negotiating = false;
@@ -91,7 +92,7 @@ final servicesProvider = FutureProvider<List<BluetoothService>>((ref) async {
   BluetoothService lastservice = services.last;
   BluetoothCharacteristic lastCharacteristic = lastservice.characteristics.last;
 
-  ref.read(targetCharacteristicProvider.notifier).state = lastCharacteristic;
+  ref.read(targetCharacteristicProvider.notifier).set(lastCharacteristic);
 
   return services;
-});
+}, retry: (retryCount, error) => null);

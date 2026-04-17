@@ -4,8 +4,6 @@ import 'package:ugoku_console/bluetooth/target_device_provider.dart';
 
 import 'ble_characteristic_broadcaster.dart';
 
-BleStateBroadcaster? _broadcaster;
-
 final bleStateChannelProvider = Provider<Iterable<BleStateChannel>>((ref) {
   return List.generate(256, (index) => BleStateChannel(index));
 });
@@ -17,16 +15,11 @@ final bleStateBroadcasterProvider = Provider<BleStateBroadcaster>((ref) {
 
   final characteristic = ref.watch(targetCharacteristicProvider);
 
-  // Dispose the previous broadcaster
-  _broadcaster?.dispose();
+  final broadcaster = characteristic == null
+      ? BleStateBroadcaster(channels)
+      : BleStateBroadcaster(channels, characteristic: characteristic);
 
-  if (characteristic == null) {
-    return BleStateBroadcaster(channels);
-  } else {
-    return BleStateBroadcaster(channels, characteristic: characteristic);
-  }
+  ref.onDispose(broadcaster.dispose);
 
+  return broadcaster;
 });
-
-
-

@@ -217,8 +217,9 @@ class _ConsolePageState extends State<ConsolePage> {
                 ? OutlinedButton(
                 onPressed: () {
                   // Try connecting to the device.
-                  ref.read(targetDeviceProvider.notifier).state =
-                      latestTargetDevice;
+                  ref
+                      .read(targetDeviceProvider.notifier)
+                      .set(latestTargetDevice);
                 },
                 child: Text(AppLocale.connect.getString(context)))
                 : OutlinedButton(

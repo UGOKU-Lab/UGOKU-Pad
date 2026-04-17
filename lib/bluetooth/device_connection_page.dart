@@ -158,11 +158,11 @@ class _DeviceConnectionPageState extends State<DeviceConnectionPage> {
                         : const Icon(Icons.error)
                         : null,
                     onTap: () async {
-                      targetDeviceNotifier.state = null;
+                      targetDeviceNotifier.set(null);
                       await Future.delayed(const Duration(milliseconds: 100));
 
                       // Request the connection to the device.
-                      targetDeviceNotifier.state = device;
+                      targetDeviceNotifier.set(device);
                     },
                   );
                 },

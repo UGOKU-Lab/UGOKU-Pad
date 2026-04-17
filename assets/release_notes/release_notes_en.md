@@ -1,6 +1,6 @@
-### Release Notes: 2.1.5
+### Release Notes: 2.1.6
 
-Welcome to the 2.1.5 of the UGOKU Pad.
+Welcome to the 2.1.6 of the UGOKU Pad.
 With this app, you can connect to a microcontroller such as ESP32 via Bluetooth and do various things such as operating the motor and displaying sensor values with a console created by yourself.
 
 [How to use](https://ugoku-lab.github.io/ugokupad.html)
@@ -9,6 +9,9 @@ This offers the following key features:
 - Console creation
 - Connection to your Bluetooth devices
 - Control of the devices using BLE
+
+#### 2.1.6 Update:
+- Maintenance: Upgraded the state management library flutter_riverpod to the 3.x major version.
 
 #### 2.1.5 Update:
 - Maintenance: Updated internal libraries to the latest versions.
