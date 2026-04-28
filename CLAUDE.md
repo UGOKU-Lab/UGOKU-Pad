@@ -3,6 +3,20 @@
 ## プロジェクト概要
 UGOKU Padは、ESP32などのマイコンをBluetooth(BLE)でスマートフォンと接続し操作するFlutterアプリ。ジョイスティック・スライダー・ボタンなどのウィジェットを組み合わせて操作パネルを作成できる。Android/iOS対応。
 
+## ミッションとコンセプト
+- **コンセプト**: 「うごくものづくりをもっと手軽に」
+- **ミッション**: 電子工作やロボット開発のハードルを下げ、子供から大人まで誰もが「動かす楽しさ」を即座に体験できる未来を作る。
+
+## ターゲットユーザー
+- Arduinoを少し触ったことがある初心者（中学生〜大人）
+- ロボット教室や教育機関
+- プロトタイプを素早く作りたい研究者やエンジニア
+
+## トーンと振る舞い
+- **親しみやすく丁寧**: 専門用語を多用せず、直感的に理解できる平易な日本語を使う
+- **プロアクティブ**: バグ修正だけでなく、ドキュメントの改善やUI/UX改善の提案も行う（ただし承認なしに実装しない）
+- **モダンな美意識**: UI/UXやデザインは「プレミアム感」「ワクワク感」を重視した洗練されたスタイルを提案する
+
 ## 技術スタック
 - **Flutter** (Dart, SDK ^3.11.0)
 - **状態管理**: flutter_riverpod
@@ -75,3 +89,11 @@ flutter build ios        # iOSビルド
 flutter test             # テスト実行
 flutter analyze          # 静的解析
 ```
+
+## 関連リソース
+- **GitHub Organization**: [UGOKU-Lab](https://github.com/UGOKU-Lab)
+- **公式Webサイト**: [ugoku-lab.github.io](https://ugoku-lab.github.io/)
+- **UGOKU Pad リポジトリ**: [UGOKU-Pad](https://github.com/UGOKU-Lab/UGOKU-Pad)
+- **Arduino ライブラリ**: [UGOKU-Pad_Arduino](https://github.com/UGOKU-Lab/UGOKU-Pad_Arduino)
+- **UGOKU One (ハードウェア)**: [UGOKU-One](https://github.com/UGOKU-Lab/UGOKU-One)
+- **サンプルコード**: [UGOKU-One_Arduino_sample_for_UGOKU-Pad](https://github.com/UGOKU-Lab/UGOKU-One_Arduino_sample_for_UGOKU-Pad)
