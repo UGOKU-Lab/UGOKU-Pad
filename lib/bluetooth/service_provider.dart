@@ -1,23 +1,23 @@
-import 'dart:io';
+import 'dart:async';
 
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ugoku_console/bluetooth/target_device_provider.dart';
 
+import 'ble/ble_adapter.dart';
 import 'constants.dart';
+import 'target_device_provider.dart';
 
 /// Whether the connection process is on-going.
 bool _negotiating = false;
 
 /// The connection target.
-BluetoothDevice? _connectionTargetDevice;
+DeviceHandle? _connectionTargetDevice;
 
 /// Provides the current target device associated with the [servicesProvider].
 ///
 /// This filters the devices from [targetDeviceProvider] to keep the connection
 /// process legal. Successors received during the connection process will be
 /// ignored.
-final connectionTargetDeviceProvider = Provider<BluetoothDevice?>((ref) {
+final connectionTargetDeviceProvider = Provider<DeviceHandle?>((ref) {
   final device = ref.watch(targetDeviceProvider);
 
   if (!_negotiating) {
@@ -27,71 +27,58 @@ final connectionTargetDeviceProvider = Provider<BluetoothDevice?>((ref) {
   return _connectionTargetDevice;
 });
 
-final servicesProvider = FutureProvider<List<BluetoothService>>((ref) async {
+/// Establishes the GATT connection and locates the UGOKU-Pad characteristic.
+/// The Future completes when the characteristic is ready; the result is the
+/// characteristic itself.
+final servicesProvider = FutureProvider<CharacteristicHandle?>((ref) async {
   final device = ref.watch(connectionTargetDeviceProvider);
-  var services = <BluetoothService>[];
 
-  // Check if the device is null and return an empty list if so
+  // Check if the device is null and return null if so
   if (device == null) {
-    return [];
+    ref.read(targetCharacteristicProvider.notifier).state = null;
+    return null;
   }
 
   // Start the connection process
   _negotiating = true;
 
+  CharacteristicHandle? characteristic;
   try {
     // Try to connect to the target device with a timeout
     await device.connect(timeout: const Duration(seconds: 10));
 
-    // Listen for the connection state changes
-    device.connectionState.listen((event) {
-      if (event == BluetoothConnectionState.disconnected) {
-        // Unselect the target if disconnected
+    // Listen for the connection state changes. Cancel the subscription when
+    // the provider is disposed (e.g. a new device is selected) to avoid a
+    // stale listener clearing the target after a later disconnect event.
+    final StreamSubscription<bool> connectionSub =
+        device.connectionState.listen((connected) {
+      if (!connected) {
+        // Unselect the target if disconnected, only if it is still this device.
         if (ref.read(targetDeviceProvider) == device) {
           ref.read(targetDeviceProvider.notifier).state = null;
         }
       }
     });
+    ref.onDispose(connectionSub.cancel);
 
-    // Clear GATT cache for Android devices
-    if (Platform.isAndroid) {
-      device.clearGattCache();
+    characteristic = await device.getCharacteristic(
+      serviceUuid: UgokuPadUuids.service,
+      characteristicUuid: UgokuPadUuids.characteristic,
+    );
+
+    if (characteristic == null) {
+      throw StateError('UGOKU-Pad characteristic not found on device.');
     }
-
-    // Discover services offered by the device
-    services = await device.discoverServices();
-
-    // Query descriptors from the services
-    final descriptors = services
-        .expand((service) => service.characteristics)
-        .expand((characteristic) => characteristic.descriptors)
-        .where((descriptor) {
-      final uuid = descriptor.descriptorUuid.toString();
-
-      // Check for specific descriptor UUID patterns
-      return DescriptorUuidPatten.userDescription.hasMatch(uuid) ||
-          DescriptorUuidPatten.presentationFormat.hasMatch(uuid) ||
-          DescriptorUuidPatten.aggregationFormat.hasMatch(uuid);
-    });
-
-    // Read each descriptor asynchronously
-    for (final descriptor in descriptors) {
-      await descriptor.read();
-    }
-
   } catch (error) {
     // Unselect the target device if an error occurs
     ref.read(targetDeviceProvider.notifier).state = null;
+    ref.read(targetCharacteristicProvider.notifier).state = null;
+    rethrow;
   } finally {
     // Set negotiating flag to false
     _negotiating = false;
   }
 
-
-  BluetoothService lastservice = services.last;
-  BluetoothCharacteristic lastCharacteristic = lastservice.characteristics.last;
-
-  ref.read(targetCharacteristicProvider.notifier).state = lastCharacteristic;
-
-  return services;
+  ref.read(targetCharacteristicProvider.notifier).state = characteristic;
+  return characteristic;
 });

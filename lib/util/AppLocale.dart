@@ -55,6 +55,8 @@ mixin AppLocale {
   static const String device_page_title = 'device_page_title';
   static const String device_page_empty = 'device_page_empty';
   static const String device_page_scan = 'device_page_scan';
+  static const String device_page_connecting = 'device_page_connecting';
+  static const String device_page_web_requirement = 'device_page_web_requirement';
   static const String privacy_load_failed = 'privacy_load_failed';
   static const String privacy_no_data = 'privacy_no_data';
   static const String parameter_error = 'parameter_error';
@@ -173,6 +175,9 @@ mixin AppLocale {
     device_page_title: 'Peripheral Devices',
     device_page_empty: 'No devices found.',
     device_page_scan: 'Scan devices',
+    device_page_connecting: 'Connecting...',
+    device_page_web_requirement:
+        'Web Bluetooth requires Chrome, Edge, or Opera over HTTPS.',
     privacy_load_failed: 'Failed to load privacy policy.',
     privacy_no_data: 'No data available.',
     parameter_error: 'Parameter Error',
@@ -295,6 +300,8 @@ mixin AppLocale {
     device_page_title: 'デバイスの検索',
     device_page_empty: 'デバイスが見つかりませんでした',
     device_page_scan: 'デバイスを検索',
+    device_page_connecting: '接続中...',
+    device_page_web_requirement: 'Web BluetoothはHTTPS環境のChrome / Edge / Operaで利用できます',
     privacy_load_failed: 'プライバシーポリシーの読み込みに失敗しました',
     privacy_no_data: '表示できる情報がありません',
     parameter_error: 'パラメータエラー',
