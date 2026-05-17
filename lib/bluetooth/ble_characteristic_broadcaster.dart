@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 import '../util/broadcaster/multi_channel_broadcaster.dart';
+import 'ble/ble_adapter.dart';
 
 class BleStateChannel implements BroadcastChannel {
   int channelId;
@@ -34,7 +34,7 @@ class BleStateBroadcaster implements MultiChannelBroadcaster {
   final List<BleStateChannel> channels;
 
   /// The BLE characteristic for communication.
-  final BluetoothCharacteristic? characteristic;
+  final CharacteristicHandle? characteristic;
 
   /// The stream that translates the binary data from the [characteristic] to the [_ValueOnChannel], then broadcasts to the branches.
   final _root = StreamController<_ValueOnChannel>.broadcast();
@@ -47,13 +47,13 @@ class BleStateBroadcaster implements MultiChannelBroadcaster {
   final _dataMap = <BleStateChannel, int>{};
   final _channelCache = <String, BleStateChannel?>{};
 
-  late StreamSubscription<List<int>> _notificationSubscription;
+  StreamSubscription<List<int>>? _notificationSubscription;
   late Timer _periodicSendTimer;
 
   /// Creates a broadcaster using [characteristic].
   BleStateBroadcaster(
       this.channels, {
-        this.characteristic, // Optional named parameter
+        this.characteristic,
       }) {
     // Enable notifications on the characteristic only if it's provided
     if (characteristic != null) {
@@ -68,22 +68,18 @@ class BleStateBroadcaster implements MultiChannelBroadcaster {
   }
 
   Future<void> _setNotifications() async {
-    await characteristic?.setNotifyValue(true);
-
-    // Listen to notifications
-    _notificationSubscription =
-        characteristic!.onValueReceived.listen(
-            _distribute, onError: (error) {
-          debugPrint('Notification error: $error');
-        });
+    final stream = await characteristic!.startNotifications();
+    _notificationSubscription = stream.listen(
+      _distribute,
+      onError: (Object error) {
+        debugPrint('Notification error: $error');
+      },
+    );
   }
 
   /// Handle a full notification/read from the BLE characteristic.
   /// On both platforms, we expect exactly 19 bytes: 9×(channel, value) + 1×(checksum).
   void _distribute(List<int> data) {
-
-    //print('*** Raw notification bytes: $data');
-
     _receiveBuffer.addAll(data);
 
     // Process in 19-byte chunks
@@ -107,7 +103,6 @@ class BleStateBroadcaster implements MultiChannelBroadcaster {
         final int ch = chunk[2 * i];     // byte indices: 0,2,4,...,16
         final int val = chunk[2 * i + 1]; // byte indices: 1,3,5,...,17
 
-        // Emit only if this channel is in our “channels” list
         _root.sink.add(_ValueOnChannel(ch, val));
       }
     }
@@ -148,17 +143,15 @@ class BleStateBroadcaster implements MultiChannelBroadcaster {
         packetData.add(xor);
 
         // Send the full 19-byte packet
-        final bool supportsWWR = characteristic!.properties.writeWithoutResponse;
-        if (supportsWWR) {
-          await characteristic!.write(Uint8List.fromList(packetData), withoutResponse: true);
-        } else {
-          await characteristic!.write(Uint8List.fromList(packetData));
-        }
+        await characteristic!.writeValue(
+          Uint8List.fromList(packetData),
+          withoutResponse: true,
+        );
 
         offset += 9; // Move to next block of 9 entries (if any)
       }
 
-      // Clear everything once we’ve sent
+      // Clear everything once we've sent
       _sendDataMap.clear();
     } catch (e) {
       debugPrint('Error in _periodicSend: $e');
@@ -167,8 +160,7 @@ class BleStateBroadcaster implements MultiChannelBroadcaster {
 
   void dispose() {
     _periodicSendTimer.cancel();
-
-    _notificationSubscription.cancel();
+    _notificationSubscription?.cancel();
   }
 
   @override
@@ -257,23 +249,16 @@ StreamController<U> downward,
 
 /// The [value] on the [channel].
 ///
-/// Now sent/received in a 19‐byte block:
+/// Now sent/received in a 19-byte block:
 ///
-/// - Bytes 0–1   =  (channel0, value0)
-/// - Bytes 2–3   =  (channel1, value1)
-/// - …
-/// - Bytes 16–17 =  (channel8, value8)
+/// - Bytes 0-1   =  (channel0, value0)
+/// - Bytes 2-3   =  (channel1, value1)
+/// - ...
+/// - Bytes 16-17 =  (channel8, value8)
 /// - Byte 18     =  XOR checksum of bytes 0..17
 class _ValueOnChannel {
-  final int channel; // Channel ID as an integer
+  final int channel;
   final int value;
 
-  /// Creates a [value] on the [channel].
   _ValueOnChannel(this.channel, this.value);
-
-  /// Converts to a byte list.
-  Uint8List toUint8List() {
-    final checksum = channel ^ value;
-    return Uint8List.fromList([channel, value, checksum]);
-  }
 }

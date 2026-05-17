@@ -73,8 +73,8 @@ class _ConsoleButtonWidgetState extends State<ConsoleButtonWidget> {
 
     _subscription =
         widget.broadcaster?.streamOn(widget.property.channel!)?.listen((event) {
-          // Exit when already activated.
-          if (_activate) return;
+          // Exit when widget was disposed or already activated.
+          if (!mounted || _activate) return;
 
           // Update the value.
           setState(() {
@@ -125,6 +125,13 @@ class _ConsoleButtonWidgetState extends State<ConsoleButtonWidget> {
     }
 
     super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    _subscription = null;
+    super.dispose();
   }
 
   @override

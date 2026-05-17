@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ugoku_console/bluetooth/ble/ble_adapter.dart';
 import 'package:ugoku_console/privacy_page.dart';
 import 'package:ugoku_console/util/AppLocale.dart';
 
@@ -35,7 +35,7 @@ class _ConsolePageState extends State<ConsolePage> {
   String? _consoleTitle;
 
   /// The latest target device to connect.
-  BluetoothDevice? latestTargetDevice;
+  DeviceHandle? latestTargetDevice;
 
   @override
   void initState() {
@@ -153,9 +153,9 @@ class _ConsolePageState extends State<ConsolePage> {
             // The line through decoration will be applied if the connection is
             // not available.
             return Text(
-              connectionTargetDevice.platformName.isEmpty
-                  ? connectionTargetDevice.remoteId.str
-                  : connectionTargetDevice.platformName,
+              connectionTargetDevice.name.isEmpty
+                  ? connectionTargetDevice.id
+                  : connectionTargetDevice.name,
 
               style: TextStyle(
                 decoration: connection.when(
@@ -175,7 +175,9 @@ class _ConsolePageState extends State<ConsolePage> {
                 padding: const EdgeInsets.only(right: 5),
                 child: latestTargetDevice != null
                   ? Text(
-                  latestTargetDevice!.platformName,
+                  latestTargetDevice!.name.isEmpty
+                      ? latestTargetDevice!.id
+                      : latestTargetDevice!.name,
 
                   style: const TextStyle(
                     fontStyle: FontStyle.italic,

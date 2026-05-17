@@ -6,6 +6,13 @@ class DescriptorUuidPatten {
   static final aggregationFormat = RegExp(r"^00002905.*");
 }
 
+/// UUIDs defined by the UGOKU-Pad Arduino library.
+/// Keep in sync with UGOKU-Pad_Arduino/src/UGOKU-Pad_Definitions.h.
+class UgokuPadUuids {
+  static const service = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
+  static const characteristic = 'beb5483e-36e1-4688-b7f5-ea07361b26a8';
+}
+
 String defaultColorHex = "673AB7";
 
 String lastColor = defaultColorHex;
