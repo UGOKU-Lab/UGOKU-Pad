@@ -107,7 +107,7 @@ class _ScanBodyState extends State<_ScanBody> {
                       Text(AppLocale.device_page_empty.getString(context)),
                       const SizedBox(height: 12),
                       OutlinedButton(
-                        onPressed: _startDeviceScan,
+                        onPressed: _rescan,
                         child: Text(
                             AppLocale.device_page_scan.getString(context)),
                       ),
@@ -128,44 +128,53 @@ class _ScanBodyState extends State<_ScanBody> {
                   error: (_, __) => 'error',
                 );
 
-            return Scaffold(
-              appBar: AppBar(
-                automaticallyImplyLeading: false,
-                elevation: 0,
-                toolbarHeight: 0,
-              ),
-              body: ListView.builder(
-                itemCount: listedDevices.length,
-                itemBuilder: (context, index) {
-                  final DeviceHandle device = listedDevices[index];
-                  return ListTile(
-                    title: _buildDeviceTitle(device),
-                    subtitle: _buildDeviceSubtitle(device),
-                    enabled: connectionStatus != 'negotiating',
-                    trailing: currentTargetDevice == device
-                        ? connectionStatus == 'established'
-                            ? const Icon(Icons.bluetooth_connected)
-                            : connectionStatus == 'negotiating'
-                                ? const CircularProgressIndicator()
-                                : const Icon(Icons.error)
-                        : null,
-                    onTap: () async {
-                      targetDeviceNotifier.state = null;
-                      await Future.delayed(const Duration(milliseconds: 100));
-                      targetDeviceNotifier.state = device;
-                    },
-                  );
-                },
-              ),
-              floatingActionButton: FloatingActionButton(
-                onPressed: _isScanning ? null : _startDeviceScan,
-                child: const Icon(Icons.replay),
-              ),
+            return Stack(
+              children: [
+                ListView.builder(
+                  itemCount: listedDevices.length,
+                  itemBuilder: (context, index) {
+                    final DeviceHandle device = listedDevices[index];
+                    return ListTile(
+                      title: _buildDeviceTitle(device),
+                      subtitle: _buildDeviceSubtitle(device),
+                      enabled: connectionStatus != 'negotiating',
+                      trailing: currentTargetDevice == device
+                          ? connectionStatus == 'established'
+                              ? const Icon(Icons.bluetooth_connected)
+                              : connectionStatus == 'negotiating'
+                                  ? const CircularProgressIndicator()
+                                  : const Icon(Icons.error)
+                          : null,
+                      onTap: () async {
+                        targetDeviceNotifier.state = null;
+                        await Future.delayed(
+                            const Duration(milliseconds: 100));
+                        targetDeviceNotifier.state = device;
+                      },
+                    );
+                  },
+                ),
+                Positioned(
+                  right: 16,
+                  bottom: 16,
+                  child: FloatingActionButton(
+                    onPressed: _isScanning ? null : _rescan,
+                    child: const Icon(Icons.replay),
+                  ),
+                ),
+              ],
             );
           },
         );
       },
     );
+  }
+
+  Future<void> _rescan() async {
+    // Refresh system-connected devices on rescan so devices paired after the
+    // page opened (or missed by an initial race) appear without reopen.
+    await _loadSystemDevices();
+    await _startDeviceScan();
   }
 
   Future _startDeviceScan() async {
@@ -256,9 +265,10 @@ class _WebPickerBodyState extends ConsumerState<_WebPickerBody> {
             ),
             const SizedBox(height: 12),
             if (connectionStatus == 'negotiating')
-              const Padding(
-                padding: EdgeInsets.only(top: 8),
-                child: Text('Connecting...'),
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                    AppLocale.device_page_connecting.getString(context)),
               ),
             if (_error != null)
               Padding(
@@ -268,9 +278,9 @@ class _WebPickerBodyState extends ConsumerState<_WebPickerBody> {
                     textAlign: TextAlign.center),
               ),
             const SizedBox(height: 24),
-            const Text(
-              'Web Bluetooth requires Chrome, Edge, or Opera over HTTPS.',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
+            Text(
+              AppLocale.device_page_web_requirement.getString(context),
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
               textAlign: TextAlign.center,
             ),
           ],

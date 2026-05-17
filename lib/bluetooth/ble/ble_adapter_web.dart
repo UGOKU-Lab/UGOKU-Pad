@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_web_bluetooth/flutter_web_bluetooth.dart' as fwb;
+import 'package:flutter_web_bluetooth/js_web_bluetooth.dart' as jswb;
 
 import 'ble_types.dart';
 
@@ -57,15 +58,12 @@ class _WebBleAdapter implements BleAdapter {
     try {
       final device = await fwb.FlutterWebBluetooth.instance.requestDevice(options);
       return _WebDeviceHandle(device);
-    } catch (e) {
-      // User cancellation and "device not found" are expected and return null;
-      // anything else surfaces as a thrown error.
-      final name = e.runtimeType.toString();
-      if (name == 'UserCancelledDialogError' ||
-          name == 'DeviceNotFoundError') {
-        return null;
-      }
-      rethrow;
+    } on jswb.UserCancelledDialogError {
+      // User dismissed the picker; treat as a no-op.
+      return null;
+    } on jswb.DeviceNotFoundError {
+      // No matching device available; treat as a no-op.
+      return null;
     }
   }
 

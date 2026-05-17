@@ -3,7 +3,7 @@ export 'ble_types.dart';
 import 'ble_types.dart';
 import 'ble_adapter_stub.dart'
     if (dart.library.io) 'ble_adapter_io.dart'
-    if (dart.library.html) 'ble_adapter_web.dart' as impl;
+    if (dart.library.js_interop) 'ble_adapter_web.dart' as impl;
 
 BleAdapter? _cached;
 

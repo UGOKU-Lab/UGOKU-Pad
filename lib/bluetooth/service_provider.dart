@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'ble/ble_adapter.dart';
@@ -45,15 +47,19 @@ final servicesProvider = FutureProvider<CharacteristicHandle?>((ref) async {
     // Try to connect to the target device with a timeout
     await device.connect(timeout: const Duration(seconds: 10));
 
-    // Listen for the connection state changes
-    device.connectionState.listen((connected) {
+    // Listen for the connection state changes. Cancel the subscription when
+    // the provider is disposed (e.g. a new device is selected) to avoid a
+    // stale listener clearing the target after a later disconnect event.
+    final StreamSubscription<bool> connectionSub =
+        device.connectionState.listen((connected) {
       if (!connected) {
-        // Unselect the target if disconnected
+        // Unselect the target if disconnected, only if it is still this device.
         if (ref.read(targetDeviceProvider) == device) {
           ref.read(targetDeviceProvider.notifier).state = null;
         }
       }
     });
+    ref.onDispose(connectionSub.cancel);
 
     characteristic = await device.getCharacteristic(
       serviceUuid: UgokuPadUuids.service,

@@ -49,6 +49,7 @@ class BleStateBroadcaster implements MultiChannelBroadcaster {
 
   StreamSubscription<List<int>>? _notificationSubscription;
   late Timer _periodicSendTimer;
+  bool _disposed = false;
 
   /// Creates a broadcaster using [characteristic].
   BleStateBroadcaster(
@@ -69,6 +70,11 @@ class BleStateBroadcaster implements MultiChannelBroadcaster {
 
   Future<void> _setNotifications() async {
     final stream = await characteristic!.startNotifications();
+    if (_disposed) {
+      // Disposed before notifications were ready: tear down immediately.
+      await characteristic!.stopNotifications();
+      return;
+    }
     _notificationSubscription = stream.listen(
       _distribute,
       onError: (Object error) {
@@ -159,8 +165,19 @@ class BleStateBroadcaster implements MultiChannelBroadcaster {
   }
 
   void dispose() {
+    _disposed = true;
     _periodicSendTimer.cancel();
     _notificationSubscription?.cancel();
+    _notificationSubscription = null;
+    // Best-effort safety: zero every channel touched this session so motors
+    // stop even if the firmware's BLE-disconnect callback is missed. The
+    // write fails silently (caught in _periodicSend) if the link is gone.
+    if (characteristic != null && _dataMap.isNotEmpty) {
+      for (final ch in _dataMap.keys) {
+        _sendDataMap[ch] = 0;
+      }
+      _periodicSend();
+    }
   }
 
   @override
